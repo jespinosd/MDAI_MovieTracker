@@ -1,30 +1,33 @@
-package com.example.movieTracker.data.model;
+package es.unex.cum.mdai.movieTracker.data.model;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "colecciones")
 public class Coleccion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idColeccion;
 
     @OneToOne
-    // clave foránea:idUsuario
     private Usuario usuario;
 
     @ManyToMany
     private List<Pelicula> listaPeliculas = new ArrayList<>();
 
-    // Constructors
-    public Coleccion() {}
+    // Constructor por defecto
+    public Coleccion() {
+    }
 
+    // Constructor con parámetros
     public Coleccion(Usuario usuario) {
         this.usuario = usuario;
     }
 
-    // Getters and Setters
+    // Getters y Setters
     public Long getIdColeccion() {
         return idColeccion;
     }

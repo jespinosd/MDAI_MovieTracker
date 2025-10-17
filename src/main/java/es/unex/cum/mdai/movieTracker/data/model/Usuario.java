@@ -1,30 +1,45 @@
-package com.example.movieTracker.data.model;
+package es.unex.cum.mdai.movieTracker.data.model;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "usuarios")
 public class Usuario {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
+
+    @Column(nullable = false)
     private String nombre;
+
+    @Column(nullable = false)
     private String apellido1;
+
     private String apellido2;
+
+    @Column(nullable = false, unique = true)
     private String email;
+
+    @Column(nullable = false, unique = true)
     private String username;
+
+    @Column(nullable = false)
     private String password;
 
-    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Coleccion coleccion;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Valoracion> listaValoraciones = new ArrayList<>();
 
-    // Constructors
-    public Usuario() {}
+    // Constructor por defecto
+    public Usuario() {
+    }
 
+    // Constructor con parámetros
     public Usuario(String nombre, String apellido1, String apellido2, String email, String username, String password) {
         this.nombre = nombre;
         this.apellido1 = apellido1;
@@ -34,7 +49,7 @@ public class Usuario {
         this.password = password;
     }
 
-    // Getters and Setters
+    // Getters y Setters
     public Long getIdUsuario() {
         return idUsuario;
     }

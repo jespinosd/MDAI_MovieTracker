@@ -1,4 +1,4 @@
-package com.example.movieTracker;
+package es.unex.cum.mdai.movieTracker;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

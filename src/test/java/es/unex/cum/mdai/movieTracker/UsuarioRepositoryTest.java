@@ -1,4 +1,4 @@
-package com.example.movieTracker;
+package es.unex.cum.mdai.movieTracker;
 
 public class UsuarioRepositoryTest {
 }

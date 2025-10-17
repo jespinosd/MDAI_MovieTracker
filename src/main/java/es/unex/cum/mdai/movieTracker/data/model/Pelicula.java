@@ -1,29 +1,42 @@
-package com.example.movieTracker.data.model;
+package es.unex.cum.mdai.movieTracker.data.model;
 
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(name = "peliculas")
 public class Pelicula {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPelicula;
+
+    @Column(nullable = false)
     private String titulo;
+
+    @Column(nullable = false)
     private int anio;
+
+    @Column(nullable = false)
     private String genero;
+
+    @Column(length = 1000)
     private String sinopsis;
+
     private String pathImagen;
 
     @ManyToMany(mappedBy = "listaPeliculas")
     private List<Coleccion> listaColecciones = new ArrayList<>();
 
-    @OneToMany(mappedBy = "pelicula", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "pelicula", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Valoracion> listaValoraciones = new ArrayList<>();
 
-    // Constructors
-    public Pelicula() {}
+    // Constructor por defecto
+    public Pelicula() {
+    }
 
+    // Constructor con parámetros
     public Pelicula(String titulo, int anio, String genero, String sinopsis, String pathImagen) {
         this.titulo = titulo;
         this.anio = anio;
@@ -32,7 +45,7 @@ public class Pelicula {
         this.pathImagen = pathImagen;
     }
 
-    // Getters and Setters
+    // Getters y Setters
     public Long getIdPelicula() {
         return idPelicula;
     }

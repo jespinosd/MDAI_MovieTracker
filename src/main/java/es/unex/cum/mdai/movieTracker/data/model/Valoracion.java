@@ -1,27 +1,32 @@
-package com.example.movieTracker.data.model;
+package es.unex.cum.mdai.movieTracker.data.model;
 
 import jakarta.persistence.*;
 
 @Entity
+@Table(name = "valoraciones")
 public class Valoracion {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idValoracion;
 
     @ManyToOne
-    /// clave foránea:idUsuario
     private Usuario usuario;
 
     @ManyToOne
-    // calve foránea:idPelicula
     private Pelicula pelicula;
 
+    @Column(nullable = false)
     private int puntuacion;
+
+    @Column(length = 500)
     private String comentario;
 
-    // Constructors
-    public Valoracion() {}
+    // Constructor por defecto
+    public Valoracion() {
+    }
 
+    // Constructor con parámetros
     public Valoracion(Usuario usuario, Pelicula pelicula, int puntuacion, String comentario) {
         this.usuario = usuario;
         this.pelicula = pelicula;
@@ -29,7 +34,7 @@ public class Valoracion {
         this.comentario = comentario;
     }
 
-    // Getters and Setters
+    // Getters y Setters
     public Long getIdValoracion() {
         return idValoracion;
     }
@@ -70,4 +75,3 @@ public class Valoracion {
         this.comentario = comentario;
     }
 }
-
