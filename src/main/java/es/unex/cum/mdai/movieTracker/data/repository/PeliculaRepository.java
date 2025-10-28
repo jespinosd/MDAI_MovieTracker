@@ -24,22 +24,8 @@ public interface PeliculaRepository extends CrudRepository<Pelicula,Long> {
     @Query("SELECT p FROM Pelicula p LEFT JOIN p.listaValoraciones v GROUP BY p HAVING COALESCE(AVG(v.puntuacion),0) >= :puntuacion")
     List<Pelicula> findByAverageRatingGreaterThanEqual(@Param("puntuacion") double puntuacion);
 
-
-    // Revisar de aquí hacia abajo
-
-    // Ordenar todas las películas por la valoración media (desc)
-    @Query("SELECT p FROM Pelicula p LEFT JOIN p.listaValoraciones v GROUP BY p ORDER BY AVG(v.puntuacion) DESC")
-    List<Pelicula> findAllOrderByAverageRatingDesc();
-
     // Obtener la valoración media de una película
     @Query("SELECT AVG(v.puntuacion) FROM Valoracion v WHERE v.pelicula.idPelicula = :idPelicula")
     Double findAverageRatingByPeliculaId(@Param("idPelicula") Long idPelicula);
-
-    // Contar valoraciones de una película
-    @Query("SELECT COUNT(v) FROM Valoracion v WHERE v.pelicula.idPelicula = :idPelicula")
-    Long countValoracionesByPeliculaId(@Param("idPelicula") Long idPelicula);
-
-    // Comprobar existencia por título exacto
-    boolean existsByTituloIgnoreCase(String titulo);
 
 }
