@@ -19,6 +19,9 @@ public class Pelicula {
     private int anio;
 
     @Column(nullable = false)
+    private String director;
+
+    @Column(nullable = false)
     private String genero;
 
     @Column(length = 1000)
@@ -37,9 +40,10 @@ public class Pelicula {
     }
 
     // Constructor con parámetros
-    public Pelicula(String titulo, int anio, String genero, String sinopsis, String pathImagen) {
+    public Pelicula(String titulo, int anio, String director, String genero, String sinopsis, String pathImagen) {
         this.titulo = titulo;
         this.anio = anio;
+        this.director = director;
         this.genero = genero;
         this.sinopsis = sinopsis;
         this.pathImagen = pathImagen;
@@ -69,6 +73,10 @@ public class Pelicula {
     public void setAnio(int anio) {
         this.anio = anio;
     }
+
+    public String getDirector() { return director; }
+
+    public void setDirector(String director) { this.director = director; }
 
     public String getGenero() {
         return genero;
