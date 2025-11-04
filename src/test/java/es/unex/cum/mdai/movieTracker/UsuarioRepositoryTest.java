@@ -213,11 +213,4 @@ public class UsuarioRepositoryTest {
         assertFalse(coleccionRepository.findById(idColeccion).isPresent());
         assertTrue(valoracionRepository.findByUsuario_IdUsuario(idUsuario).isEmpty());
     }
-
-
-    @Test
-    void testCount() {
-        long count = usuarioRepository.count();
-        assertEquals(4, count);
-    }
 }

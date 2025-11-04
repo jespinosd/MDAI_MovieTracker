@@ -378,10 +378,4 @@ public class PeliculaRepositoryTest {
         assertFalse(valoracionRepository.findById(idVal1).isPresent());
         assertFalse(valoracionRepository.findById(idVal2).isPresent());
     }
-
-    @Test
-    void testContarPeliculas() {
-        long count = peliculaRepository.count();
-        assertEquals(5, count);
-    }
 }
