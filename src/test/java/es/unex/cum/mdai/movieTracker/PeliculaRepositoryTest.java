@@ -352,11 +352,31 @@ public class PeliculaRepositoryTest {
 
     @Test
     void testEliminarPelicula() {
-        Long id = pelicula1.getIdPelicula();
+        // Crear valoraciones asociadas a pelicula1
+        Valoracion val1 = new Valoracion(usuario1, pelicula1, 8, "Muy buena película");
+        Valoracion val2 = new Valoracion(usuario1, pelicula1, 9, "Obra maestra");
+        valoracionRepository.save(val1);
+        valoracionRepository.save(val2);
+
+        // Guardar los IDs antes de eliminar
+        Long idPelicula = pelicula1.getIdPelicula();
+        Long idVal1 = val1.getIdValoracion();
+        Long idVal2 = val2.getIdValoracion();
+
+        // Verificar que las valoraciones existen antes de eliminar
+        assertTrue(valoracionRepository.findById(idVal1).isPresent());
+        assertTrue(valoracionRepository.findById(idVal2).isPresent());
+
+        // Eliminar la película
         peliculaRepository.delete(pelicula1);
 
-        Pelicula eliminada = peliculaRepository.findByIdPelicula(id);
+        // Verificar que la película ha sido eliminada
+        Pelicula eliminada = peliculaRepository.findByIdPelicula(idPelicula);
         assertNull(eliminada);
+
+        // Verificar que las valoraciones también han sido eliminadas
+        assertFalse(valoracionRepository.findById(idVal1).isPresent());
+        assertFalse(valoracionRepository.findById(idVal2).isPresent());
     }
 
     @Test
