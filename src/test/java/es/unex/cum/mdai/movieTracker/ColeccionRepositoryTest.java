@@ -54,20 +54,23 @@ public class ColeccionRepositoryTest {
         assertNotNull(pelicula1, "pelicula1 no encontrada en la BD de test");
         assertNotNull(pelicula2, "pelicula2 no encontrada en la BD de test");
 
-        coleccion1 = usuario1.getColeccion();
-        coleccion1.getListaPeliculas().add(pelicula1);
-        coleccion1.getListaPeliculas().add(pelicula2);
-        coleccionRepository.save(coleccion1);
+        // Recuperar colecciones creadas por data.sql
+        Optional<Coleccion> opt1 = coleccionRepository.findByUsuario_IdUsuario(usuario1.getIdUsuario());
+        Optional<Coleccion> opt2 = coleccionRepository.findByUsuario_IdUsuario(usuario2.getIdUsuario());
+
+        assertTrue(opt1.isPresent(), "Coleccion de usuario1 no encontrada en data.sql");
+        assertTrue(opt2.isPresent(), "Coleccion de usuario2 no encontrada en data.sql");
+
+        coleccion1 = opt1.get();
+        coleccion2 = opt2.get();
+
+        // En ocasiones JPA no rellena la lista inmediatamente si la relación es lazy; forzamos acceso
+        coleccion1.getListaPeliculas().size();
+        coleccion2.getListaPeliculas().size();
+
+        // Asociar a los usuarios para tests que usan usuario.getColeccion()
         usuario1.setColeccion(coleccion1);
-
-        coleccion2 = usuario2.getColeccion();
-        coleccion2.getListaPeliculas().add(pelicula1);
-        coleccionRepository.save(coleccion2);
         usuario2.setColeccion(coleccion2);
-
-        // Guardar cambios en usuarios
-        usuarioRepository.save(usuario1);
-        usuarioRepository.save(usuario2);
     }
 
     @Test
@@ -132,13 +135,13 @@ public class ColeccionRepositoryTest {
     @Test
     void testCrudColeccion() {
         // Guardar nueva coleccion para un nuevo usuario (usar datos coherentes)
-        Usuario nuevo = new Usuario("María", "López", "Ruiz", "maria.lopez@test.com", "maria", "pwd");
+        Usuario nuevo = new Usuario("Emilio", "Delgado", "Muñoz", "emilio.delgado@test.com", "emi", "emi123");
         usuarioRepository.save(nuevo);
 
-        Coleccion nuevaColec = new Coleccion(nuevo);
-        assertNull(nuevaColec.getIdColeccion());
+        Optional<Coleccion> opt1 = coleccionRepository.findByUsuario_IdUsuario(nuevo.getIdUsuario());
+        assertTrue(opt1.isPresent(), "Coleccion de emi no encontrada en data.sql");
 
-        Coleccion guardada = coleccionRepository.save(nuevaColec);
+        Coleccion guardada = opt1.get();
         assertNotNull(guardada.getIdColeccion());
 
         // Añadir pelicula y actualizar

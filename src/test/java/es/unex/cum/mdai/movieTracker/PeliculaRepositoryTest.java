@@ -47,7 +47,7 @@ public class PeliculaRepositoryTest {
         pelicula4 = peliculaRepository.findByTitulo("Interstellar");
         pelicula5 = peliculaRepository.findByTitulo("El Último Tango en París");
 
-        usuario1 = usuarioRepository.findByUsername("usuario1");
+        usuario1 = usuarioRepository.findByUsername("juanp");
 
         // Asegurar que los objetos existen en la BD de test
         assertNotNull(pelicula1, "pelicula1 no encontrada en la BD de test");
