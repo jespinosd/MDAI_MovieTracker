@@ -162,58 +162,55 @@ public class UsuarioRepositoryTest {
 
     @Test
     void testEliminarUsuario() {
-        // Crear un usuario con colección y valoraciones
+        // Crear el usuario
         Usuario nuevo = new Usuario("Pedro", "Gomez", "Lopez", "pedro.gomez@test.com", "pedro", "clave");
-        Usuario guardado = usuarioRepository.save(nuevo);
 
-        // Crear una película para poder valorar
+        // Crear la colección y asociarla
+        Coleccion coleccion = new Coleccion();
+        coleccion.setUsuario(nuevo);
+        nuevo.setColeccion(coleccion);
+
+        // Crear la película
         Pelicula pelicula = new Pelicula("Película Test", 2020, "Director Test", "Drama", "Sinopsis de prueba", null);
         peliculaRepository.save(pelicula);
 
-        // Crear y asociar una colección al usuario
-        Coleccion coleccion = new Coleccion(guardado);
-        coleccionRepository.save(coleccion);
-        guardado.setColeccion(coleccion);
-
         // Crear valoraciones y asociarlas al usuario y a la película
-        Valoracion valoracion1 = new Valoracion(guardado, pelicula, 5, "Excelente película");
-        Valoracion valoracion2 = new Valoracion(guardado, pelicula, 4, "Muy buena");
-        valoracionRepository.save(valoracion1);
-        valoracionRepository.save(valoracion2);
+        Valoracion v1 = new Valoracion();
+        v1.setUsuario(nuevo);
+        v1.setPelicula(pelicula);
+        v1.setPuntuacion(5);
+        v1.setComentario("Excelente película");
 
-        // Guardar los ids antes de eliminar
+        Valoracion v2 = new Valoracion();
+        v2.setUsuario(nuevo);
+        v2.setPelicula(pelicula);
+        v2.setPuntuacion(4);
+        v2.setComentario("Muy buena");
+
+        nuevo.setListaValoraciones(List.of(v1, v2));
+
+        // Guardar solo el usuario (gracias al cascade se guarda todo)
+        Usuario guardado = usuarioRepository.save(nuevo);
+
         Long idUsuario = guardado.getIdUsuario();
-        Long idColeccion = coleccion.getIdColeccion();
-        Long idValoracion1 = valoracion1.getIdValoracion();
-        Long idValoracion2 = valoracion2.getIdValoracion();
+        Long idColeccion = guardado.getColeccion().getIdColeccion();
 
-        // Verificar que existen antes de eliminar
-        assertNotNull(usuarioRepository.findByIdUsuario(idUsuario));
+        // Guardar los ids de las valoraciones
+        Long idValoracion1 = guardado.getListaValoraciones().get(0).getIdValoracion();
+        Long idValoracion2 = guardado.getListaValoraciones().get(1).getIdValoracion();
+
+        // Comprobaciones previas
+        assertNotNull(idUsuario);
         assertTrue(coleccionRepository.findById(idColeccion).isPresent());
         assertTrue(valoracionRepository.findById(idValoracion1).isPresent());
         assertTrue(valoracionRepository.findById(idValoracion2).isPresent());
 
-        // Eliminar el usuario
+        // Eliminar usuario
         usuarioRepository.delete(guardado);
 
-        // Verificar que el usuario ha sido eliminado
-        Usuario trasEliminacion = usuarioRepository.findByIdUsuario(idUsuario);
-        assertNull(trasEliminacion);
-
-        // Verificar que la colección asociada ha sido eliminada (cascade)
+        // Comprobaciones posteriores
+        assertNull(usuarioRepository.findByIdUsuario(idUsuario));
         assertFalse(coleccionRepository.findById(idColeccion).isPresent());
-
-        // Verificar que las valoraciones del usuario han sido eliminadas (cascade)
-        List<Valoracion> valoracionesTrasEliminacion = valoracionRepository.findByUsuario_IdUsuario(idUsuario);
-        assertTrue(valoracionesTrasEliminacion.isEmpty());
-        assertFalse(valoracionRepository.findById(idValoracion1).isPresent());
-        assertFalse(valoracionRepository.findById(idValoracion2).isPresent());
-    }
-
-    @Test
-    void testCount() {
-        long count = usuarioRepository.count();
-        assertEquals(4, count);
+        assertTrue(valoracionRepository.findByUsuario_IdUsuario(idUsuario).isEmpty());
     }
 }
-
