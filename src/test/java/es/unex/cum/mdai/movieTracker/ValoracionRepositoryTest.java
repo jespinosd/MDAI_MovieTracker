@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class ValoracionRepositoryTest {
 
     @Autowired
@@ -37,22 +39,18 @@ public class ValoracionRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Limpiar repositorios
-        valoracionRepository.deleteAll();
-        peliculaRepository.deleteAll();
-        usuarioRepository.deleteAll();
+        // Recuperar las entidades insertadas por data.sql
+        usuario1 = usuarioRepository.findByUsername("alicia");
+        usuario2 = usuarioRepository.findByUsername("juanp");
 
-        // Crear usuarios
-        usuario1 = new Usuario("Alicia", "Sánchez", "Fernández", "alicia.sanchez@test.com", "alicia", "aliciaPass!23");
-        usuario2 = new Usuario("Juan", "Pérez", "García", "juan.perez@test.com", "usuario1", "password123");
-        usuarioRepository.save(usuario1);
-        usuarioRepository.save(usuario2);
+        pelicula1 = peliculaRepository.findByTitulo("El Padrino");
+        pelicula2 = peliculaRepository.findByTitulo("Inception");
 
-        // Crear películas
-        pelicula1 = new Pelicula("El Padrino", 1972, "Francis Ford Coppola", "Drama", "La historia de la familia Corleone", "/images/padrino.jpg");
-        pelicula2 = new Pelicula("Inception", 2010, "Christopher Nolan", "Ciencia Ficción", "Un ladrón que roba secretos a través de los sueños", "/images/inception.jpg");
-        peliculaRepository.save(pelicula1);
-        peliculaRepository.save(pelicula2);
+        // Asegurar que los objetos existen en la BD de test
+        assertNotNull(usuario1, "usuario1 no encontrado en la BD de test");
+        assertNotNull(usuario2, "usuario2 no encontrado en la BD de test");
+        assertNotNull(pelicula1, "pelicula1 no encontrada en la BD de test");
+        assertNotNull(pelicula2, "pelicula2 no encontrada en la BD de test");
     }
 
     @Test

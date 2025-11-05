@@ -47,6 +47,8 @@ public class Usuario {
         this.email = email;
         this.username = username;
         this.password = password;
+
+        this.coleccion = new Coleccion(this);
     }
 
     // Getters y Setters

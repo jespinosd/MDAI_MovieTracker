@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class UsuarioRepositoryTest {
 
     @Autowired
@@ -41,22 +43,17 @@ public class UsuarioRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Limpiar antes
-        usuarioRepository.deleteAll();
-        coleccionRepository.deleteAll();
-        valoracionRepository.deleteAll();
-        peliculaRepository.deleteAll();
+        // Recuperar las entidades insertadas por data.sql
+        usuario1 = usuarioRepository.findByUsername("alicia");
+        usuario2 = usuarioRepository.findByUsername("juanp");
+        usuario3 = usuarioRepository.findByUsername("maria");
+        usuario4 = usuarioRepository.findByUsername("alicia4");
 
-        // Crear usuarios de prueba
-        usuario1 = new Usuario("Alicia", "Sánchez", "Fernández", "alicia.sanchez@test.com", "alicia", "aliciaPass!23");
-        usuario2 = new Usuario("Juan", "Pérez", "García", "juan.perez@test.com", "juanp", "secret");
-        usuario3 = new Usuario("María", "López", "Ruiz", "maria.lopez@test.com", "maria", "pwd");
-        usuario4 = new Usuario("Alicia", "Gómez", "Ruiz", "alicia4.gomez@test.com", "alicia4", "alicia4Pass");
-
-        usuarioRepository.save(usuario1);
-        usuarioRepository.save(usuario2);
-        usuarioRepository.save(usuario3);
-        usuarioRepository.save(usuario4);
+        // Asegurar que los objetos existen en la BD de test
+        assertNotNull(usuario1, "usuario1 no encontrado en la BD de test");
+        assertNotNull(usuario2, "usuario2 no encontrado en la BD de test");
+        assertNotNull(usuario3, "usuario3 no encontrado en la BD de test");
+        assertNotNull(usuario4, "usuario4 no encontrado en la BD de test");
     }
 
     @Test
@@ -121,8 +118,8 @@ public class UsuarioRepositoryTest {
         List<Usuario> resultadosMayusculas = usuarioRepository.findByNombreContainingIgnoreCase("ALICIA");
         assertNotNull(resultadosMayusculas);
         assertEquals(2, resultadosMayusculas.size());
-        assertEquals("alicia", resultados.get(0).getUsername());
-        assertEquals("alicia4", resultados.get(1).getUsername());
+        assertEquals("alicia", resultadosMayusculas.get(0).getUsername());
+        assertEquals("alicia4", resultadosMayusculas.get(1).getUsername());
     }
 
     @Test

@@ -23,6 +23,10 @@ INSERT INTO peliculas (titulo, anio, director, genero, sinopsis, path_imagen) VA
 ('Interstellar', 2014, 'Christopher Nolan', 'Ciencia Ficción', 'Un grupo de astronautas viaja a través de un agujero de gusano', '/images/interstellar.jpg'),
 ('El Último Tango en París', 1972, 'Bernardo Bertolucci', 'Drama', 'Una historia de amor y pasión en París', '/images/tango.jpg');
 
--- Usuario
+-- Usuarios necesarios para los tests
 INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password) VALUES
-('Juan', 'Pérez', 'García', 'juan.perez@test.com', 'usuario1', 'password123');
+('Alicia',  'Sánchez',   'Fernández', 'alicia.sanchez@test.com', 'alicia',   'aliciaPass!23'),
+('Juan',    'Pérez',     'García',    'juan.perez@test.com',     'juanp',    'secret'),
+('María',   'López',     'Ruiz',      'maria.lopez@test.com',    'maria',    'pwd'),
+('Alicia',  'Gómez',     'Ruiz',      'alicia.gomez@test.com',   'alicia4',  'alicia4Pass')
+-- Nota: las colecciones y valoraciones se crean en los tests cuando sean necesarias.

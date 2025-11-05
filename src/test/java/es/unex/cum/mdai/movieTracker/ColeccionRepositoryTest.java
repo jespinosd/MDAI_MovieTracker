@@ -10,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class ColeccionRepositoryTest {
 
     @Autowired
@@ -39,50 +41,33 @@ public class ColeccionRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Limpiar antes
-        coleccionRepository.deleteAll();
-        peliculaRepository.deleteAll();
-        usuarioRepository.deleteAll();
+        // Recuperar usuarios y películas insertados por data.sql
+        usuario1 = usuarioRepository.findByUsername("alicia");
+        usuario2 = usuarioRepository.findByUsername("juanp");
 
-        // Usuarios
-        usuario1 = new Usuario("Alicia", "Sánchez", "Fernández", "alicia.sanchez@test.com", "alicia", "aliciaPass!23");
-        usuario2 = new Usuario("Juan", "Pérez", "García", "juan.perez@test.com", "juanp", "secret");
-        usuarioRepository.save(usuario1);
-        usuarioRepository.save(usuario2);
+        pelicula1 = peliculaRepository.findByTitulo("El Padrino");
+        pelicula2 = peliculaRepository.findByTitulo("Inception");
 
-        // Películas
-        pelicula1 = new Pelicula(
-                "El Padrino",
-                1972,
-                "Francis Ford Coppola",
-                "Drama",
-                "La historia de la familia Corleone",
-                "/images/padrino.jpg"
-        );
+        // Asegurar que existen
+        assertNotNull(usuario1, "usuario1 no encontrado en la BD de test");
+        assertNotNull(usuario2, "usuario2 no encontrado en la BD de test");
+        assertNotNull(pelicula1, "pelicula1 no encontrada en la BD de test");
+        assertNotNull(pelicula2, "pelicula2 no encontrada en la BD de test");
 
-        pelicula2 = new Pelicula(
-                "Inception",
-                2010,
-                "Christopher Nolan",
-                "Ciencia Ficción",
-                "Un ladrón que roba secretos a través de los sueños",
-                "/images/inception.jpg"
-        );
-
-        peliculaRepository.save(pelicula1);
-        peliculaRepository.save(pelicula2);
-
-        // Colecciones asociadas a los usuarios de prueba
-        coleccion1 = new Coleccion(usuario1);
+        coleccion1 = usuario1.getColeccion();
         coleccion1.getListaPeliculas().add(pelicula1);
         coleccion1.getListaPeliculas().add(pelicula2);
         coleccionRepository.save(coleccion1);
         usuario1.setColeccion(coleccion1);
 
-        coleccion2 = new Coleccion(usuario2);
+        coleccion2 = usuario2.getColeccion();
         coleccion2.getListaPeliculas().add(pelicula1);
         coleccionRepository.save(coleccion2);
         usuario2.setColeccion(coleccion2);
+
+        // Guardar cambios en usuarios
+        usuarioRepository.save(usuario1);
+        usuarioRepository.save(usuario2);
     }
 
     @Test
