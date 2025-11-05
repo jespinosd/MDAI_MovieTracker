@@ -10,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
+@Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 public class PeliculaRepositoryTest {
 
     @Autowired
@@ -39,67 +40,22 @@ public class PeliculaRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        // Limpiar repositorios
-        valoracionRepository.deleteAll();
-        peliculaRepository.deleteAll();
-        usuarioRepository.deleteAll();
+        // Recuperar las entidades insertadas por data.sql
+        pelicula1 = peliculaRepository.findByTitulo("El Padrino");
+        pelicula2 = peliculaRepository.findByTitulo("Inception");
+        pelicula3 = peliculaRepository.findByTitulo("El Padrino II");
+        pelicula4 = peliculaRepository.findByTitulo("Interstellar");
+        pelicula5 = peliculaRepository.findByTitulo("El Último Tango en París");
 
-        // Crear películas de prueba
-        pelicula1 = new Pelicula(
-                "El Padrino",
-                1972,
-                "Francis Ford Coppola",
-                "Drama",
-                "La historia de la familia Corleone",
-                "/images/padrino.jpg"
-        );
+        usuario1 = usuarioRepository.findByUsername("usuario1");
 
-        pelicula2 = new Pelicula(
-                "Inception",
-                2010,
-                "Christopher Nolan",
-                "Ciencia Ficción",
-                "Un ladrón que roba secretos a través de los sueños",
-                "/images/inception.jpg"
-        );
-
-        pelicula3 = new Pelicula(
-                "El Padrino II",
-                1974,
-                "Francis Ford Coppola",
-                "Drama",
-                "La continuación de la saga Corleone",
-                "/images/padrino2.jpg"
-        );
-
-        pelicula4 = new Pelicula(
-                "Interstellar",
-                2014,
-                "Christopher Nolan",
-                "Ciencia Ficción",
-                "Un grupo de astronautas viaja a través de un agujero de gusano",
-                "/images/interstellar.jpg"
-        );
-
-        pelicula5 = new Pelicula(
-                "El Último Tango en París",
-                1972,
-                "Bernardo Bertolucci",
-                "Drama",
-                "Una historia de amor y pasión en París",
-                "/images/tango.jpg"
-        );
-
-        // Guardar películas
-        peliculaRepository.save(pelicula1);
-        peliculaRepository.save(pelicula2);
-        peliculaRepository.save(pelicula3);
-        peliculaRepository.save(pelicula4);
-        peliculaRepository.save(pelicula5);
-
-        // Crear usuario para valoraciones
-        usuario1 = new Usuario("Juan", "Pérez", "García", "juan.perez@test.com", "usuario1", "password123");
-        usuarioRepository.save(usuario1);
+        // Asegurar que los objetos existen en la BD de test
+        assertNotNull(pelicula1, "pelicula1 no encontrada en la BD de test");
+        assertNotNull(pelicula2, "pelicula2 no encontrada en la BD de test");
+        assertNotNull(pelicula3, "pelicula3 no encontrada en la BD de test");
+        assertNotNull(pelicula4, "pelicula4 no encontrada en la BD de test");
+        assertNotNull(pelicula5, "pelicula5 no encontrada en la BD de test");
+        assertNotNull(usuario1, "usuario1 no encontrado en la BD de test");
     }
 
     // ==================== TESTS DE BÚSQUEDAS EXACTAS ====================
