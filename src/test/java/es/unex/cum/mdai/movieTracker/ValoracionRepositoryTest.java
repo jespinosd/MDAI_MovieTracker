@@ -36,6 +36,9 @@ public class ValoracionRepositoryTest {
     private Usuario usuario2;
     private Pelicula pelicula1;
     private Pelicula pelicula2;
+    private Valoracion valoracion1;
+    private Valoracion valoracion2;
+    private Valoracion valoracion3;
 
     @BeforeEach
     void setUp() {
@@ -51,18 +54,43 @@ public class ValoracionRepositoryTest {
         assertNotNull(usuario2, "usuario2 no encontrado en la BD de test");
         assertNotNull(pelicula1, "pelicula1 no encontrada en la BD de test");
         assertNotNull(pelicula2, "pelicula2 no encontrada en la BD de test");
+
+        // Recuperar las valoraciones insertadas por data.sql
+        List<Valoracion> todas = (List<Valoracion>) valoracionRepository.findAll();
+        // Deben existir exactamente 3 valoraciones definidas en data.sql
+        assertEquals(3, todas.size(), "No se han encontrado las 3 valoraciones esperadas en data.sql");
+
+        // Asignar en base a usuario/pelicula
+        for (Valoracion v : todas) {
+            if (v.getUsuario().getIdUsuario().equals(usuario1.getIdUsuario()) &&
+                    v.getPelicula().getIdPelicula().equals(pelicula1.getIdPelicula())) {
+                valoracion1 = v; // Alicia - El Padrino (7)
+            } else if (v.getUsuario().getIdUsuario().equals(usuario1.getIdUsuario()) &&
+                    v.getPelicula().getIdPelicula().equals(pelicula2.getIdPelicula())) {
+                valoracion2 = v; // Alicia - Inception (9)
+            } else if (v.getUsuario().getIdUsuario().equals(usuario2.getIdUsuario()) &&
+                    v.getPelicula().getIdPelicula().equals(pelicula1.getIdPelicula())) {
+                valoracion3 = v; // Juan - El Padrino (5)
+            }
+        }
+
+        assertNotNull(valoracion1, "valoracion1 no encontrada");
+        assertNotNull(valoracion2, "valoracion2 no encontrada");
+        assertNotNull(valoracion3, "valoracion3 no encontrada");
+
+        // Comprobaciones básicas de contenido (según lo insertado en data.sql)
+        assertEquals(7, valoracion1.getPuntuacion());
+        assertEquals("Buena", valoracion1.getComentario());
+
+        assertEquals(9, valoracion2.getPuntuacion());
+        assertEquals("Excelente", valoracion2.getComentario());
+
+        assertEquals(5, valoracion3.getPuntuacion());
+        assertEquals("Regular", valoracion3.getComentario());
     }
 
     @Test
     void testFindByUsuario_IdUsuario() {
-        // Crear valoraciones
-        Valoracion v1 = new Valoracion(usuario1, pelicula1, 7, "Buena");
-        Valoracion v2 = new Valoracion(usuario1, pelicula2, 9, "Excelente");
-        Valoracion v3 = new Valoracion(usuario2, pelicula1, 5, "Regular");
-        valoracionRepository.save(v1);
-        valoracionRepository.save(v2);
-        valoracionRepository.save(v3);
-
         List<Valoracion> valsUsuario1 = valoracionRepository.findByUsuario_IdUsuario(usuario1.getIdUsuario());
         assertNotNull(valsUsuario1);
         assertEquals(2, valsUsuario1.size());
@@ -79,20 +107,13 @@ public class ValoracionRepositoryTest {
 
     @Test
     void testFindByPelicula_IdPelicula() {
-        // Crear valoraciones
-        Valoracion v1 = new Valoracion(usuario1, pelicula1, 8, "Muy buena");
-        Valoracion v2 = new Valoracion(usuario2, pelicula1, 6, "Aceptable");
-        Valoracion v3 = new Valoracion(usuario1, pelicula2, 4, "Mala");
-        valoracionRepository.save(v1);
-        valoracionRepository.save(v2);
-        valoracionRepository.save(v3);
 
         List<Valoracion> valsPeli1 = valoracionRepository.findByPelicula_IdPelicula(pelicula1.getIdPelicula());
         assertNotNull(valsPeli1);
         assertEquals(2, valsPeli1.size());
 
-        assertEquals(8, valsPeli1.get(0).getPuntuacion());
-        assertEquals(6, valsPeli1.get(1).getPuntuacion());
+        assertEquals(7, valsPeli1.get(0).getPuntuacion());
+        assertEquals(5, valsPeli1.get(1).getPuntuacion());
 
         // Película inexistente -> lista vacía
         List<Valoracion> valsNoPeli = valoracionRepository.findByPelicula_IdPelicula(999L);
@@ -102,16 +123,14 @@ public class ValoracionRepositoryTest {
 
     @Test
     void testFindByUsuarioAndPelicula() {
-        Valoracion v = new Valoracion(usuario1, pelicula1, 10, "Obra maestra");
-        valoracionRepository.save(v);
-
         Optional<Valoracion> opt = valoracionRepository.findByUsuario_IdUsuarioAndPelicula_IdPelicula(
                 usuario1.getIdUsuario(), pelicula1.getIdPelicula());
 
         assertTrue(opt.isPresent());
         Valoracion encontrada = opt.get();
-        assertEquals(10, encontrada.getPuntuacion());
-        assertEquals("Obra maestra", encontrada.getComentario());
+
+        assertEquals(7, encontrada.getPuntuacion());
+        assertEquals("Buena", encontrada.getComentario());
 
         // Par inexistente -> Optional vacío
         Optional<Valoracion> optNo = valoracionRepository.findByUsuario_IdUsuarioAndPelicula_IdPelicula(999L, 999L);
@@ -120,7 +139,8 @@ public class ValoracionRepositoryTest {
 
     @Test
     void testCrudValoracion() {
-        Valoracion v = new Valoracion(usuario1, pelicula2, 3, "No me gustó");
+        // Crear una nueva valoración (no la que vino en data.sql)
+        Valoracion v = new Valoracion(usuario2, pelicula2, 3, "No me gustó");
         Valoracion guardada = valoracionRepository.save(v);
 
         assertNotNull(guardada.getIdValoracion());
@@ -137,7 +157,7 @@ public class ValoracionRepositoryTest {
         assertTrue(valsAntes.stream().anyMatch(x -> x.getIdValoracion().equals(guardada.getIdValoracion())));
 
         // Comprobar que el usuario tiene asociada la valoración por id antes de eliminar
-        List<Valoracion> valsUsuarioAntes = valoracionRepository.findByUsuario_IdUsuario(usuario1.getIdUsuario());
+        List<Valoracion> valsUsuarioAntes = valoracionRepository.findByUsuario_IdUsuario(usuario2.getIdUsuario());
         assertNotNull(valsUsuarioAntes);
         assertTrue(valsUsuarioAntes.stream().anyMatch(x -> x.getIdValoracion().equals(guardada.getIdValoracion())));
 
@@ -163,7 +183,7 @@ public class ValoracionRepositoryTest {
         assertFalse(valsDespues.stream().anyMatch(x -> x.getIdValoracion().equals(guardada.getIdValoracion())));
 
         // Comprobar que el usuario ya no tiene asociada la valoración (por id)
-        List<Valoracion> valsUsuarioDespues = valoracionRepository.findByUsuario_IdUsuario(usuario1.getIdUsuario());
+        List<Valoracion> valsUsuarioDespues = valoracionRepository.findByUsuario_IdUsuario(usuario2.getIdUsuario());
         assertNotNull(valsUsuarioDespues);
         assertFalse(valsUsuarioDespues.stream().anyMatch(x -> x.getIdValoracion().equals(guardada.getIdValoracion())));
     }

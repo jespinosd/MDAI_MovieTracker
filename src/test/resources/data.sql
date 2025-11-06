@@ -67,4 +67,23 @@ JOIN usuarios u ON c.usuario_id_usuario = u.id_usuario
 JOIN peliculas p ON p.titulo = 'El Padrino'
 WHERE u.username = 'juanp';
 
--- Nota: las valoraciones se crean en los tests cuando sean necesarias.
+-- *** Inserción de valoraciones para los tests (ahora se incluyen en data.sql) ***
+-- Valoración 1: Alicia valora 'El Padrino' con 7 ('Buena')
+INSERT INTO valoraciones (usuario_id_usuario, pelicula_id_pelicula, puntuacion, comentario)
+SELECT u.id_usuario, p.id_pelicula, 7, 'Buena'
+FROM usuarios u, peliculas p
+WHERE u.username = 'alicia' AND p.titulo = 'El Padrino';
+
+-- Valoración 2: Alicia valora 'Inception' con 9 ('Excelente')
+INSERT INTO valoraciones (usuario_id_usuario, pelicula_id_pelicula, puntuacion, comentario)
+SELECT u.id_usuario, p.id_pelicula, 9, 'Excelente'
+FROM usuarios u, peliculas p
+WHERE u.username = 'alicia' AND p.titulo = 'Inception';
+
+-- Valoración 3: Juan valora 'El Padrino' con 5 ('Regular')
+INSERT INTO valoraciones (usuario_id_usuario, pelicula_id_pelicula, puntuacion, comentario)
+SELECT u.id_usuario, p.id_pelicula, 5, 'Regular'
+FROM usuarios u, peliculas p
+WHERE u.username = 'juanp' AND p.titulo = 'El Padrino';
+
+-- Nota: las demás valoraciones usadas en tests unitarios se podrían crear adicionalmente aquí si se desea.
