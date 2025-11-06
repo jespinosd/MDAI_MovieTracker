@@ -17,11 +17,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- Inserciones para tests de PeliculaRepositoryTest
 -- Películas
 INSERT INTO peliculas (titulo, anio, director, genero, sinopsis, path_imagen) VALUES
-('El Padrino', 1972, 'Francis Ford Coppola', 'Drama', 'La historia de la familia Corleone', '/images/padrino.jpg'),
-('Inception', 2010, 'Christopher Nolan', 'Ciencia Ficción', 'Un ladrón que roba secretos a través de los sueños', '/images/inception.jpg'),
-('El Padrino II', 1974, 'Francis Ford Coppola', 'Drama', 'La continuación de la saga Corleone', '/images/padrino2.jpg'),
-('Interstellar', 2014, 'Christopher Nolan', 'Ciencia Ficción', 'Un grupo de astronautas viaja a través de un agujero de gusano', '/images/interstellar.jpg'),
-('El Último Tango en París', 1972, 'Bernardo Bertolucci', 'Drama', 'Una historia de amor y pasión en París', '/images/tango.jpg');
+('El Padrino', 1972, 'Francis Ford Coppola', 'Drama', 'La historia de la familia Corleone', '/img/padrino.jpg'),
+('Inception', 2010, 'Christopher Nolan', 'Ciencia Ficción', 'Un ladrón que roba secretos a través de los sueños', '/img/inception.jpg'),
+('El Padrino II', 1974, 'Francis Ford Coppola', 'Drama', 'La continuación de la saga Corleone', '/img/padrino2.jpg'),
+('Interstellar', 2014, 'Christopher Nolan', 'Ciencia Ficción', 'Un grupo de astronautas viaja a través de un agujero de gusano', '/img/interstellar.jpg'),
+('El Último Tango en París', 1972, 'Bernardo Bertolucci', 'Drama', 'Una historia de amor y pasión en París', '/img/tango.jpg');
 
 -- Usuarios necesarios para los tests
 INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password) VALUES
