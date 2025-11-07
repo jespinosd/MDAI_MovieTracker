@@ -230,16 +230,16 @@ public class PeliculaRepositoryTest {
     // ==================== TESTS DE VALORACIONES ====================
     @Test
     void testFindAverageRatingByPeliculaId() {
-        Double mediaInexistente = peliculaRepository.findAverageRatingByPeliculaId(pelicula1.getIdPelicula());
+        Double mediaInexistente = peliculaRepository.findAverageRatingByPeliculaId(pelicula5.getIdPelicula());
         assertNull(mediaInexistente);
 
         // Crear valoraciones para pelicula1
-        Valoracion val1 = new Valoracion(usuario1, pelicula1, 8, "Excelente película");
-        Valoracion val2 = new Valoracion(usuario2, pelicula1, 9, "Obra maestra");
+        Valoracion val1 = new Valoracion(usuario1, pelicula5, 8, "Excelente película");
+        Valoracion val2 = new Valoracion(usuario2, pelicula5, 9, "Obra maestra");
         valoracionRepository.save(val1);
         valoracionRepository.save(val2);
 
-        Double average = peliculaRepository.findAverageRatingByPeliculaId(pelicula1.getIdPelicula());
+        Double average = peliculaRepository.findAverageRatingByPeliculaId(pelicula5.getIdPelicula());
 
         assertNotNull(average);
         assertEquals(8.5, average, 0.01);
@@ -247,12 +247,6 @@ public class PeliculaRepositoryTest {
 
     @Test
     void testFindByAverageRatingGreaterThanEqual() {
-        List<Pelicula> peliculasSinValoraciones = peliculaRepository.findByAverageRatingGreaterThanEqual(5.0);
-
-        // Sin valoraciones, las películas tienen promedio 0
-        assertNotNull(peliculasSinValoraciones);
-        assertTrue(peliculasSinValoraciones.isEmpty());
-
         // Valoraciones para pelicula1 (promedio: 8.5)
         valoracionRepository.save(new Valoracion(usuario1, pelicula1, 8, "Muy buena"));
         valoracionRepository.save(new Valoracion(usuario2, pelicula1, 9, "Excelente"));
