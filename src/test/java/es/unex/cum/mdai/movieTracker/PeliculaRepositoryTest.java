@@ -37,6 +37,7 @@ public class PeliculaRepositoryTest {
     private Pelicula pelicula4;
     private Pelicula pelicula5;
     private Usuario usuario1;
+    private Usuario usuario2;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +49,7 @@ public class PeliculaRepositoryTest {
         pelicula5 = peliculaRepository.findByTitulo("El Último Tango en París");
 
         usuario1 = usuarioRepository.findByUsername("juanp");
+        usuario2 = usuarioRepository.findByUsername("alicia");
 
         // Asegurar que los objetos existen en la BD de test
         assertNotNull(pelicula1, "pelicula1 no encontrada en la BD de test");
@@ -56,6 +58,7 @@ public class PeliculaRepositoryTest {
         assertNotNull(pelicula4, "pelicula4 no encontrada en la BD de test");
         assertNotNull(pelicula5, "pelicula5 no encontrada en la BD de test");
         assertNotNull(usuario1, "usuario1 no encontrado en la BD de test");
+        assertNotNull(usuario2, "usuario2 no encontrado en la BD de test");
     }
 
     // ==================== TESTS DE BÚSQUEDAS EXACTAS ====================
@@ -232,7 +235,7 @@ public class PeliculaRepositoryTest {
 
         // Crear valoraciones para pelicula1
         Valoracion val1 = new Valoracion(usuario1, pelicula1, 8, "Excelente película");
-        Valoracion val2 = new Valoracion(usuario1, pelicula1, 9, "Obra maestra");
+        Valoracion val2 = new Valoracion(usuario2, pelicula1, 9, "Obra maestra");
         valoracionRepository.save(val1);
         valoracionRepository.save(val2);
 
@@ -252,7 +255,7 @@ public class PeliculaRepositoryTest {
 
         // Valoraciones para pelicula1 (promedio: 8.5)
         valoracionRepository.save(new Valoracion(usuario1, pelicula1, 8, "Muy buena"));
-        valoracionRepository.save(new Valoracion(usuario1, pelicula1, 9, "Excelente"));
+        valoracionRepository.save(new Valoracion(usuario2, pelicula1, 9, "Excelente"));
 
         // Valoraciones para pelicula2 (promedio: 6.0)
         valoracionRepository.save(new Valoracion(usuario1, pelicula2, 6, "Buena"));
@@ -310,7 +313,7 @@ public class PeliculaRepositoryTest {
     void testEliminarPelicula() {
         // Crear valoraciones asociadas a pelicula1
         Valoracion val1 = new Valoracion(usuario1, pelicula1, 8, "Muy buena película");
-        Valoracion val2 = new Valoracion(usuario1, pelicula1, 9, "Obra maestra");
+        Valoracion val2 = new Valoracion(usuario2, pelicula1, 9, "Obra maestra");
         valoracionRepository.save(val1);
         valoracionRepository.save(val2);
 
