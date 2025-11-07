@@ -247,7 +247,7 @@ public class PeliculaRepositoryTest {
 
     @Test
     void testFindByAverageRatingGreaterThanEqual() {
-        // Valoraciones para pelicula1 (promedio: 7.33 porque existe una tercera vsaloración, de 5, en data.sql)
+        // Valoraciones para pelicula1 (promedio: 7.33 porque existe una tercera valoración, de 5, en data.sql)
         valoracionRepository.save(new Valoracion(usuario1, pelicula1, 8, "Muy buena"));
         valoracionRepository.save(new Valoracion(usuario2, pelicula1, 9, "Excelente"));
 
@@ -281,7 +281,7 @@ public class PeliculaRepositoryTest {
                 "Lana Wachowski",
                 "Acción",
                 "Un hacker descubre la verdad sobre la realidad",
-                "/images/matrix.jpg"
+                "/img/matrix.jpg"
         );
 
         Pelicula guardada = peliculaRepository.save(nuevaPelicula);

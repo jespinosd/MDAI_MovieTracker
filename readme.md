@@ -99,19 +99,121 @@ Incluye cierre de sesión y modificación de los datos del usuario. Además, las
        style="display:block; margin:0 auto; max-width:600px; width:100%; height:auto;"/>
 </div>
 
->El modelo define una app donde cada usuario tiene una única colección personal. Las películas pueden estar en muchas colecciones y 
-recibir valoraciones de distintos usuarios.
+> El modelo define una app donde **cada usuario tiene una única colección personal**. Las **películas** pueden estar en muchas colecciones y 
+recibir **valoraciones** de distintos usuarios.
 
->La relación entre colección y película es muchos a muchos y se materializa con una tabla intermedia (PK (idColeccion, idPelicula)) que Spring Boot/Hibernate crea 
-automáticamente a partir del @ManyToMany. Para coherencia, se asume una única valoración por usuario y película.
+> La relación entre **colección** y **película** es **muchos a muchos** y se materializa con una **tabla intermedia (PK (idColeccion, idPelicula)) que Spring Boot/Hibernate crea 
+automáticamente** a partir del @ManyToMany. Para coherencia, se asume **una única valoración por usuario y película**.
 
->Al eliminar un usuario, se eliminan su colección y todas sus valoraciones. 
-> Al eliminar una película del catálogo, se quita de todas las colecciones y se borran sus valoraciones. 
-> Al eliminar una colección, no se elimina el usuario; solamente desaparecen los enlaces con sus películas.
+- Al **eliminar un usuario**, se eliminan su colección y **todas sus valoraciones**. 
 
-## Conexión a la base de datos
+- Al **eliminar una película** del catálogo, se quita de **todas las colecciones** y se borran sus **valoraciones**. 
 
+- Al **eliminar una colección, no se elimina el usuario**; solamente desaparecen los enlaces con sus películas.
 
+## Configuración para la conexión a la BD e inserción de datos iniciales para los tests
+
+> A continuación, se detalla la configuración de **MySQL en Docker**, la conexión desde la aplicación Spring Boot, y la inicialización de datos de prueba mediante la ejecución del script 
+**data.sql**, junto con la justificación y alcance del **application.properties** específico de tests:
+
+### Configuración de MySQL en Docker
+
+Para disponer de la base de datos, se levanta un contenedor de MySQL 8 con una base inicial y la contraseña del usuario administrador. Cuando el puerto 3306 del host está libre, el 
+contenedor puede exponerse directamente con -p 3306:3306, ejecutando  el siguiente comando:
+
+```bash
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=springbootdb -p 3306:3306 -d mysql:8.0
+```
+
+Esto crea un contenedor llamado **mysql-container**, establece la contraseña **root** como **password**, crea la base de datos **springbootdb** y mapea el puerto **3306** del host al contenedor.
+
+En nuestro caso, ese puerto en el host no estaba libre, por lo que se mapeó el **3308 del host al 3306 del contenedor**:
+
+```bash
+docker run --name mysql-container -e MYSQL_ROOT_PASSWORD=password -e MYSQL_DATABASE=springbootdb -p 3308:3306 -d mysql:8.0
+```
+
+Para acceder al contenedor y verificar la base de datos, ejecutamos el contenedor y, en Exec, podemos ejecutar el siguiente comando:
+
+```bash
+mysql -u root -p springbootdb
+```
+
+A continuación, nos pedirá la contraseña establecida previamente para el root.
+
+### Configuración de la conexión en Spring Boot
+
+En cuanto al proyecto, será necesario modificar el archivo **pom.xml**, ya que se necesita añadir la dependencia correspondiente para **MySQL**. 
+Por tanto, dentro de <dependencies>, se deben incluir las siguientes líneas:
+
+```xml
+<dependency>
+  <groupId>com.mysql</groupId>
+  <artifactId>mysql-connector-j</artifactId>
+  <version>8.0.33</version>
+</dependency>
+```
+
+Asimismo, se debe editar el archivo **application.properties en src/main/resources/** con la siguiente configuración para poder establecer la 
+conexión de la aplicación a **MySQL**:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3308/springbootdb
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.show-sql=true
+```
+
+La conexión de la aplicación a MySQL se establece desde Spring Boot mediante el driver JDBC de MySQL y una URL que apunta al puerto publicado por Docker. 
+En este caso, se configura jdbc:mysql://localhost:3308/springbootdb porque se tuvo que optar por mapear 3308→3306 (Si fuese 3306→3306, solamente se tiene que cambiar el 3308 por 3306).
+
+La ejecución de la aplicación con Maven provoca que Hibernate cree o actualice el esquema según el valor de spring.jpa.hibernate.ddl-auto. Tras el arranque del proyecto, es posible 
+comprobar desde Exec en el contenedor de MySQL en Docker que existen las tablas: usuarios, películas, colecciones, valoraciones, y la tabla intermedia del many-to-many entre colección 
+y película, generada automáticamente por JPA/Hibernate, todo ello visible con el comando SHOW TABLES;
+
+### Configuración del entorno de pruebas
+
+Para el **entorno de pruebas**, se ubica un **application.properties en src/test/resources** con una configuración aislada de la de ejecución normal. Cabe destacar que, en este fichero se indica:
+
+- La configuración del datasource (URL, credenciales y driver) y el dialecto de Hibernate para conectar la aplicación con MySQL 8 en localhost:3308, mediante:
+
+```properties
+spring.datasource.url=jdbc:mysql://localhost:3308/springbootdb?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+spring.datasource.username=root
+spring.datasource.password=password
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+spring.jpa.database-platform=org.hibernate.dialect.MySQL8Dialect
+```
+
+- El modo create-drop para que el esquema se cree al iniciar el context de tests y se elimine al finalizar, garantizando un entorno limpio y reproducible:
+
+```properties
+spring.jpa.hibernate.ddl-auto=create-drop
+```
+
+- La inicialización SQL para que se ejecute automáticamente data.sql, inicializando así los datos antes de la ejecución de cada uno de los tests:
+
+```properties
+spring.jpa.defer-datasource-initialization=true
+spring.sql.init.mode=always
+```
+
+Además, se debe hacer uso, en cada una de las clases que implementan los tests, de la anotación:
+
+```
+@Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
+```
+
+### Cómo ejecutar la aplicación
+
+En consecuencia, el orden operativo recomendado es: primero, poner en marcha el contenedor MySQL de Docker con el puerto deseado; después, arrancar el proyecto 
+con Maven para que Hibernate genere el esquema; por último, en el contexto de pruebas, permitir que el application.properties de src/test/resources cree el esquema 
+efímero y ejecute data.sql (materializa una semilla de datos coherente para los casos de prueba) automáticamente. La verificación del sistema completo se realiza 
+consultando las tablas desde el cliente MySQL (SHOW TABLES;) y observando que las entidades de dominio y la tabla intermedia autogenerada del many-to-many entre 
+Colección y Película están presentes.
 
 ## Enlace al repositorio de Github
 
