@@ -1,4 +1,4 @@
 package es.unex.cum.mdai.movieTracker.data.services;
 
-public class ValoracionServiceImpl {
+public class ValoracionServiceImpl implements  ValoracionService {
 }

@@ -1,4 +1,4 @@
 package es.unex.cum.mdai.movieTracker.data.services;
 
-public class UsuarioServiceImpl {
+public class UsuarioServiceImpl implements UsuarioService {
 }
