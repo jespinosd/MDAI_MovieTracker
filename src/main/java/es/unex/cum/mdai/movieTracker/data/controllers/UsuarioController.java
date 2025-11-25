@@ -230,14 +230,4 @@ public class UsuarioController {
         model.addAttribute("usuarios", usuarios);
         return "buscar-usuarios";
     }
-
-    // Página principal (redirige a login o perfil)
-    @GetMapping("/")
-    public String inicio(HttpSession session) {
-        if (session.getAttribute("usuarioLogueado") != null) {
-            return "redirect:/usuarios/perfil";
-        }
-        return "redirect:/usuarios/login";
-    }
 }
-
