@@ -98,18 +98,24 @@ public class UsuarioServiceImpl implements UsuarioService {
         return usuarioRepository.save(usuario);
     }
 
+    // Java
     @Override
     @Transactional
-    public Usuario cambiarPassword(Long idUsuario, String nuevaPassword) {
+    public Usuario cambiarPassword(Long idUsuario, String passwordActual, String nuevaPassword) {
         Optional<Usuario> usuarioOpt = usuarioRepository.findById(idUsuario);
         if (usuarioOpt.isEmpty()) {
             throw new IllegalArgumentException("Usuario no encontrado");
         }
 
         Usuario usuario = usuarioOpt.get();
+        if (!usuario.getPassword().equals(passwordActual)) {
+            throw new IllegalArgumentException("La contraseña actual es incorrecta");
+        }
+
         usuario.setPassword(nuevaPassword);
         return usuarioRepository.save(usuario);
     }
+
 
     // Búsqueda de usuarios
     @Override

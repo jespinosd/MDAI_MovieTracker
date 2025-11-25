@@ -22,7 +22,7 @@ public interface UsuarioService {
 
     // Actualización de perfil
     Usuario actualizarPerfil(Usuario usuario);
-    Usuario cambiarPassword(Long idUsuario, String nuevaPassword);
+    Usuario cambiarPassword(Long idUsuario, String passwordActual, String nuevaPassword);
 
     // Búsqueda de usuarios
     Optional<Usuario> findByUsername(String username);

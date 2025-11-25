@@ -173,7 +173,7 @@ public class UsuarioController {
         }
 
         try {
-            Usuario actualizado = usuarioService.cambiarPassword(usuario.getIdUsuario(), nuevaPassword);
+            Usuario actualizado = usuarioService.cambiarPassword(usuario.getIdUsuario(), passwordActual, nuevaPassword);
             session.setAttribute("usuarioLogueado", actualizado);
             redirectAttributes.addFlashAttribute("mensaje", "Contraseña cambiada correctamente");
             return "redirect:/usuarios/perfil";
