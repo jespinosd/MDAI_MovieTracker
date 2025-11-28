@@ -46,7 +46,7 @@ En resumen, MovieTracker convierte la colección audiovisual en una experiencia 
 - El sistema contará con **autenticación de usuarios** (registro/inicio de sesión) y autorización para que solo el propietario gestione su colección y valoraciones. 
 Incluye cierre de sesión y modificación de los datos del usuario. Además, las rutas de colección/valoraciones requieren sesión iniciada.
 
-- El usuario podrá **registrar nuevas películas** y series en su colección.
+- El usuario podrá **añadir nuevas películas** y series en su colección.
 
 - El usuario contará con una **barra de búsqueda** para localizar películas:
     - La búsqueda podrá ser por título, director o género.
