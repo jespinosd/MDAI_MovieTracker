@@ -3,7 +3,7 @@
 
 ## LOGO
 <div style="text-align:center">
-  <img src="img/MovieTracker.png" alt="Logo Movie Tracker" />
+  <img src="img/readme/MovieTracker.png" alt="Logo Movie Tracker" />
 </div>
 
 
@@ -12,13 +12,13 @@
 > Integrante 1:
 <p>
   Marta Paredes Martínez - DNI: 09216142L
-  <img src="img/marta.jpg" alt="Marta Paredes" style="vertical-align: middle; margin-left:46px;" />
+  <img src="img/readme/marta.jpg" alt="Marta Paredes" style="vertical-align: middle; margin-left:46px;" />
 </p>
 
 > Integrante 2:
 <p>
   Julián Espinosa Martínez - DNI: 78768139Q
-  <img src="img/julianCVUex.jpg" alt="Julián Espinosa" style="vertical-align: middle; margin-left:40px;" />
+  <img src="img/readme/julianCVUex.jpg" alt="Julián Espinosa" style="vertical-align: middle; margin-left:40px;" />
 </p>
 
 
@@ -95,7 +95,7 @@ Incluye cierre de sesión y modificación de los datos del usuario. Además, las
 ## Diagrama E-R
 
 <div>
-  <img src="img/MovieTracker_ModeloE_R.png" alt="Diagrama E-R" 
+  <img src="img/readme/MovieTracker_ModeloE_R.png" alt="Diagrama E-R" 
        style="display:block; margin:0 auto; max-width:600px; width:100%; height:auto;"/>
 </div>
 

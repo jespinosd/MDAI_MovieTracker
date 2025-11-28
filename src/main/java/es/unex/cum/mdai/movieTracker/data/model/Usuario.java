@@ -12,12 +12,13 @@ public class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idUsuario;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String nombre;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String apellido1;
 
+    @Column(length = 255)
     private String apellido2;
 
     @Column(nullable = false, unique = true)

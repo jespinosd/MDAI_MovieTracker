@@ -25,7 +25,7 @@ public class UsuarioController {
 
     // Página de inicio / Login
     @GetMapping("/login")
-    public String mostrarLogin(Model model, HttpSession session) {
+    public String mostrarLogin(HttpSession session) {
         if (session.getAttribute("usuarioLogueado") != null) {
             return "redirect:/usuarios/perfil";
         }
@@ -38,14 +38,22 @@ public class UsuarioController {
                                @RequestParam String password,
                                HttpSession session,
                                RedirectAttributes redirectAttributes) {
-        Optional<Usuario> usuarioOpt = usuarioService.login(username, password);
+        try {
+            Optional<Usuario> usuarioOpt = usuarioService.login(username, password);
 
-        if (usuarioOpt.isPresent()) {
-            session.setAttribute("usuarioLogueado", usuarioOpt.get());
-            redirectAttributes.addFlashAttribute("mensaje", "¡Bienvenido, " + usuarioOpt.get().getNombre() + "!");
-            return "redirect:/usuarios/perfil";
-        } else {
-            redirectAttributes.addFlashAttribute("error", "Usuario o contraseña incorrectos");
+            if (usuarioOpt.isPresent()) {
+                session.setAttribute("usuarioLogueado", usuarioOpt.get());
+                redirectAttributes.addFlashAttribute("mensaje", "¡Bienvenido, " + usuarioOpt.get().getNombre() + "!");
+                return "redirect:/usuarios/perfil";
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Usuario o contraseña incorrectos");
+                return "redirect:/usuarios/login";
+            }
+        } catch (IllegalArgumentException e) {
+            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/usuarios/login";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error inesperado al iniciar sesión");
             return "redirect:/usuarios/login";
         }
     }
@@ -73,6 +81,9 @@ public class UsuarioController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/usuarios/registro";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error inesperado al registrar usuario");
+            return "redirect:/usuarios/registro";
         }
     }
 
@@ -86,22 +97,26 @@ public class UsuarioController {
 
     // Ver perfil
     @GetMapping("/perfil")
-    public String verPerfil(HttpSession session, Model model) {
+    public String verPerfil(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return "redirect:/usuarios/login";
         }
 
-        // Recargar desde BD para tener datos actualizados
-        Optional<Usuario> usuarioActualizado = usuarioService.findById(usuario.getIdUsuario());
-        if (usuarioActualizado.isPresent()) {
-            model.addAttribute("usuario", usuarioActualizado.get());
-            session.setAttribute("usuarioLogueado", usuarioActualizado.get());
-        } else {
-            return "redirect:/usuarios/logout";
+        try {
+            // Recargar desde BD para tener datos actualizados
+            Optional<Usuario> usuarioActualizado = usuarioService.findById(usuario.getIdUsuario());
+            if (usuarioActualizado.isPresent()) {
+                model.addAttribute("usuario", usuarioActualizado.get());
+                session.setAttribute("usuarioLogueado", usuarioActualizado.get());
+            } else {
+                return "redirect:/usuarios/logout";
+            }
+            return "perfil";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error al cargar el perfil");
+            return "redirect:/usuarios/login";
         }
-
-        return "perfil";
     }
 
     // Página de editar perfil
@@ -135,12 +150,15 @@ public class UsuarioController {
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:/usuarios/editar";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error inesperado al actualizar perfil");
+            return "redirect:/usuarios/editar";
         }
     }
 
     // Página cambiar contraseña
     @GetMapping("/cambiar-password")
-    public String mostrarCambiarPassword(HttpSession session, Model model) {
+    public String mostrarCambiarPassword(HttpSession session) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return "redirect:/usuarios/login";
@@ -179,6 +197,9 @@ public class UsuarioController {
             return "redirect:/usuarios/perfil";
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
+            return "redirect:/usuarios/cambiar-password";
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error inesperado al cambiar contraseña");
             return "redirect:/usuarios/cambiar-password";
         }
     }

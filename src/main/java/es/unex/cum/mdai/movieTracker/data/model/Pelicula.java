@@ -12,16 +12,16 @@ public class Pelicula {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long idPelicula;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String titulo;
 
     @Column(nullable = false)
     private int anio;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String director;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 255)
     private String genero;
 
     @Column(length = 1000)
