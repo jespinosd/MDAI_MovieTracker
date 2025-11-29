@@ -24,12 +24,7 @@ public interface ValoracionService {
     // Crear o actualizar valoración
     Valoracion crearOActualizarValoracion(Long idUsuario, Long idPelicula, int puntuacion, String comentario);
 
-    // Obtener películas valoradas por un usuario
-    List<Valoracion> obtenerPeliculasVistas(Long idUsuario);
-
     // Validaciones
     boolean usuarioYaValoroPelicula(Long idUsuario, Long idPelicula);
 
-    // Calcular valoración media de una película
-    Double calcularValoracionMedia(Long idPelicula);
 }

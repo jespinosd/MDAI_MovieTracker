@@ -187,11 +187,4 @@ public class ColeccionServiceImpl implements ColeccionService {
         return coleccionOpt.get().getListaPeliculas();
     }
 
-    @Override
-    public List<Coleccion> findColeccionesConPelicula(Long idPelicula) {
-        if (idPelicula == null || idPelicula <= 0) {
-            throw new IllegalArgumentException("El ID de la película debe ser válido");
-        }
-        return coleccionRepository.findByListaPeliculas_IdPelicula(idPelicula);
-    }
 }

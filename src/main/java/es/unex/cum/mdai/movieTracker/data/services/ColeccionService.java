@@ -30,6 +30,4 @@ public interface ColeccionService {
     // Obtener películas de la colección del usuario
     List<Pelicula> obtenerPeliculasDeColeccion(Long idUsuario);
 
-    // Obtener colecciones que contienen una película
-    List<Coleccion> findColeccionesConPelicula(Long idPelicula);
 }

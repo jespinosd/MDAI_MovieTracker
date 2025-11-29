@@ -93,7 +93,7 @@ public class ColeccionController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("logueado", true);
 
-        return "peliculas-vistas";
+        return "coleccion-vistas";
     }
 
     // Ver películas pendientes (en colección pero sin valorar)
@@ -118,7 +118,7 @@ public class ColeccionController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("logueado", true);
 
-        return "peliculas-pendientes";
+        return "coleccion-pendientes";
     }
 
     // Agregar película a la colección
@@ -164,10 +164,6 @@ public class ColeccionController {
             // Redirigir según el origen
             if ("detalle".equals(origen)) {
                 return "redirect:/peliculas/" + idPelicula;
-            } else if ("pendientes".equals(origen)) {
-                return "redirect:/coleccion/pendientes";
-            } else if ("vistas".equals(origen)) {
-                return "redirect:/coleccion/vistas";
             } else {
                 return "redirect:/coleccion/todas";
             }
@@ -178,4 +174,3 @@ public class ColeccionController {
         }
     }
 }
-

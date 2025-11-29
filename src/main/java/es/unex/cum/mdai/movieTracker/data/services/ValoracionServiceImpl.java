@@ -144,14 +144,6 @@ public class ValoracionServiceImpl implements ValoracionService {
     }
 
     @Override
-    public List<Valoracion> obtenerPeliculasVistas(Long idUsuario) {
-        if (idUsuario == null || idUsuario <= 0) {
-            throw new IllegalArgumentException("El ID del usuario debe ser válido");
-        }
-        return findByUsuario(idUsuario);
-    }
-
-    @Override
     public boolean usuarioYaValoroPelicula(Long idUsuario, Long idPelicula) {
         if (idUsuario == null || idUsuario <= 0 || idPelicula == null || idPelicula <= 0) {
             return false;
@@ -159,22 +151,4 @@ public class ValoracionServiceImpl implements ValoracionService {
         return findByUsuarioAndPelicula(idUsuario, idPelicula).isPresent();
     }
 
-    @Override
-    public Double calcularValoracionMedia(Long idPelicula) {
-        if (idPelicula == null || idPelicula <= 0) {
-            return 0.0;
-        }
-
-        List<Valoracion> valoraciones = findByPelicula(idPelicula);
-
-        if (valoraciones.isEmpty()) {
-            return 0.0;
-        }
-
-        double suma = valoraciones.stream()
-                .mapToInt(Valoracion::getPuntuacion)
-                .sum();
-
-        return suma / valoraciones.size();
-    }
 }

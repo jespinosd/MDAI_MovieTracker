@@ -3,6 +3,7 @@ package es.unex.cum.mdai.movieTracker.data.controllers;
 import es.unex.cum.mdai.movieTracker.data.model.Pelicula;
 import es.unex.cum.mdai.movieTracker.data.model.Usuario;
 import es.unex.cum.mdai.movieTracker.data.model.Valoracion;
+import es.unex.cum.mdai.movieTracker.data.services.ColeccionService;
 import es.unex.cum.mdai.movieTracker.data.services.PeliculaService;
 import es.unex.cum.mdai.movieTracker.data.services.ValoracionService;
 import jakarta.servlet.http.HttpSession;
@@ -14,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/valoraciones")
@@ -22,11 +22,13 @@ public class ValoracionController {
 
     private final ValoracionService valoracionService;
     private final PeliculaService peliculaService;
+    private final ColeccionService coleccionService;
 
     @Autowired
-    public ValoracionController(ValoracionService valoracionService, PeliculaService peliculaService) {
+    public ValoracionController(ValoracionService valoracionService, PeliculaService peliculaService, ColeccionService coleccionService) {
         this.valoracionService = valoracionService;
         this.peliculaService = peliculaService;
+        this.coleccionService = coleccionService;
     }
 
     // Listar todas las valoraciones del usuario logueado (películas vistas)
@@ -45,7 +47,7 @@ public class ValoracionController {
         model.addAttribute("usuario", usuario);
         model.addAttribute("logueado", true);
 
-        return "peliculas-vistas";
+        return "coleccion-vistas";
     }
 
     // Listar películas pendientes (en colección pero sin valorar)
@@ -84,6 +86,12 @@ public class ValoracionController {
 
         Pelicula pelicula = peliculaOpt.get();
 
+        // Verificar que la película está en la colección del usuario
+        if (!coleccionService.peliculaEstaEnColeccion(usuario.getIdUsuario(), idPelicula)) {
+            redirectAttributes.addFlashAttribute("error", "Debes agregar la película a tu colección antes de valorarla");
+            return "redirect:/peliculas/" + idPelicula;
+        }
+
         // Verificar si ya existe una valoración
         Optional<Valoracion> valoracionExistente = valoracionService.findByUsuarioAndPelicula(
                 usuario.getIdUsuario(), idPelicula);
@@ -109,6 +117,12 @@ public class ValoracionController {
         if (usuario == null) {
             redirectAttributes.addFlashAttribute("error", "Debes iniciar sesión para valorar películas");
             return "redirect:/usuarios/login";
+        }
+
+        // Verificar que la película está en la colección del usuario
+        if (!coleccionService.peliculaEstaEnColeccion(usuario.getIdUsuario(), idPelicula)) {
+            redirectAttributes.addFlashAttribute("error", "Debes agregar la película a tu colección antes de valorarla");
+            return "redirect:/peliculas/" + idPelicula;
         }
 
         try {
@@ -196,7 +210,7 @@ public class ValoracionController {
             valoracionService.save(valoracion);
 
             redirectAttributes.addFlashAttribute("mensaje", "Valoración actualizada exitosamente");
-            return "redirect:/valoraciones/vistas";
+            return "redirect:/peliculas/" + valoracion.getPelicula().getIdPelicula();
 
         } catch (IllegalArgumentException e) {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
