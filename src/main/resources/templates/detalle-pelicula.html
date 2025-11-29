@@ -10,22 +10,9 @@
 </head>
 <body class="bg-light">
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-        <div class="container">
-            <a class="navbar-brand" th:href="@{/peliculas}">
-                <i class="bi bi-film"></i> MovieTracker
-            </a>
-            <div class="ms-auto">
-                <a th:href="@{/peliculas}" class="btn btn-light btn-sm">
-                    <i class="bi bi-arrow-left"></i> Volver al catálogo
-                </a>
-                <!-- Mostrar enlace de login si no está logueado -->
-                <a th:if="${!logueado}" th:href="@{/usuarios/login}" class="btn btn-outline-light btn-sm ms-2">
-                    <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-                </a>
-            </div>
-        </div>
-    </nav>
+    <div th:with="currentPage='catalogo'" th:remove="tag">
+        <div th:replace="${logueado} ? ~{fragments/navbar :: navbar-logueado} : ~{fragments/navbar :: navbar-publico}"></div>
+    </div>
 
     <div class="container mt-4">
         <!-- Mensajes -->
@@ -102,6 +89,38 @@
 
                         <!-- Acciones solo para usuarios logueados -->
                         <div th:if="${logueado}" class="d-flex gap-2 flex-wrap">
+                            <!-- Botón para agregar/eliminar de colección -->
+                            <form th:if="${!enColeccion}"
+                                  th:action="@{/coleccion/agregar/{id}(id=${pelicula.idPelicula})}"
+                                  method="post"
+                                  style="display: inline;">
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-plus-circle"></i> Agregar a mi colección
+                                </button>
+                            </form>
+                            <form th:if="${enColeccion}"
+                                  th:action="@{/coleccion/eliminar/{id}(id=${pelicula.idPelicula})}"
+                                  method="post"
+                                  style="display: inline;"
+                                  onsubmit="return confirm('¿Eliminar esta película de tu colección?');">
+                                <input type="hidden" name="origen" value="detalle">
+                                <button type="submit" class="btn btn-outline-secondary">
+                                    <i class="bi bi-dash-circle"></i> Quitar de mi colección
+                                </button>
+                            </form>
+
+                            <!-- Botón para valorar/editar valoración -->
+                            <a th:if="${valoracionUsuario == null && enColeccion}"
+                               th:href="@{/valoraciones/agregar/{id}(id=${pelicula.idPelicula})}"
+                               class="btn btn-warning">
+                                <i class="bi bi-star"></i> Valorar esta película
+                            </a>
+                            <a th:if="${valoracionUsuario != null}"
+                               th:href="@{/valoraciones/editar/{id}(id=${valoracionUsuario.idValoracion})}"
+                               class="btn btn-outline-warning">
+                                <i class="bi bi-pencil"></i> Editar mi valoración
+                            </a>
+
                             <a th:href="@{/peliculas/editar/{id}(id=${pelicula.idPelicula})}"
                                class="btn btn-primary">
                                 <i class="bi bi-pencil"></i> Editar película
@@ -129,15 +148,62 @@
             </div>
         </div>
 
-        <!-- Sección de valoraciones (para futuras implementaciones) -->
+        <!-- Sección de valoraciones -->
         <div class="card shadow mt-4">
-            <div class="card-header bg-primary text-white">
-                <h5 class="mb-0"><i class="bi bi-chat-square-text"></i> Valoraciones</h5>
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="bi bi-chat-square-text"></i> Valoraciones de usuarios</h5>
+                <span class="badge bg-light text-primary">
+                    <span th:text="${#lists.size(valoraciones)}"></span> valoración(es)
+                </span>
             </div>
             <div class="card-body">
-                <p class="text-muted text-center">
-                    <i class="bi bi-info-circle"></i> Funcionalidad de valoraciones próximamente disponible
-                </p>
+                <!-- Si no hay valoraciones -->
+                <div th:if="${#lists.isEmpty(valoraciones)}" class="text-center py-4">
+                    <i class="bi bi-chat-square-text text-muted" style="font-size: 3rem;"></i>
+                    <p class="text-muted mt-3">Aún no hay valoraciones para esta película.</p>
+                    <a th:if="${logueado and valoracionUsuario == null}"
+                       th:href="@{/valoraciones/agregar/{id}(id=${pelicula.idPelicula})}"
+                       class="btn btn-primary mt-2">
+                        <i class="bi bi-star"></i> Sé el primero en valorarla
+                    </a>
+                </div>
+
+                <!-- Lista de valoraciones -->
+                <div th:if="${!#lists.isEmpty(valoraciones)}">
+                    <div class="list-group">
+                        <div th:each="valoracion, iterStat : ${valoraciones}"
+                             class="list-group-item"
+                             th:classappend="${valoracion.idValoracion == valoracionUsuario?.idValoracion} ? 'border-warning border-2'">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <h6 class="mb-0 me-2">
+                                            <i class="bi bi-person-circle"></i>
+                                            <span th:text="${valoracion.usuario.username}"></span>
+                                        </h6>
+                                        <span th:if="${valoracion.idValoracion == valoracionUsuario?.idValoracion}"
+                                              class="badge bg-warning text-dark">
+                                            <i class="bi bi-star"></i> Tu valoración
+                                        </span>
+                                    </div>
+                                    <div class="mb-2">
+                                        <span class="badge bg-warning text-dark">
+                                            <i class="bi bi-star-fill"></i>
+                                            <span th:text="${valoracion.puntuacion}"></span>/10
+                                        </span>
+                                    </div>
+                                    <p th:if="${valoracion.comentario != null and !valoracion.comentario.isEmpty()}"
+                                       class="mb-0 text-muted"
+                                       th:text="${valoracion.comentario}"></p>
+                                    <p th:if="${valoracion.comentario == null or valoracion.comentario.isEmpty()}"
+                                       class="mb-0 text-muted fst-italic">
+                                        Sin comentario
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Valoración - MovieTracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/styles.css}" href="/css/styles.css">
+</head>
+<body class="bg-light">
+    <!-- Navbar -->
+    <div th:with="currentPage='coleccion'" th:remove="tag">
+        <div th:replace="fragments/navbar :: navbar-logueado"></div>
+    </div>
+
+    <div class="container mt-4">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <!-- Mensajes -->
+                <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="bi bi-check-circle"></i> <span th:text="${mensaje}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="bi bi-exclamation-triangle"></i> <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+
+                <!-- Formulario -->
+                <div class="card shadow">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="mb-0">
+                            <i class="bi bi-pencil-square"></i> Editar Valoración
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <!-- Información de la película -->
+                        <div class="mb-4 p-3 bg-light rounded">
+                            <div class="row align-items-center">
+                                <div class="col-auto" th:if="${pelicula.pathImagen != null and !pelicula.pathImagen.isEmpty()}">
+                                    <img th:src="${pelicula.pathImagen}"
+                                         style="width: 80px; height: 120px; object-fit: cover;"
+                                         class="rounded"
+                                         th:alt="${pelicula.titulo}">
+                                </div>
+                                <div class="col">
+                                    <h5 class="mb-1" th:text="${pelicula.titulo}"></h5>
+                                    <p class="text-muted mb-0">
+                                        <i class="bi bi-calendar"></i> <span th:text="${pelicula.anio}"></span> |
+                                        <i class="bi bi-person"></i> <span th:text="${pelicula.director}"></span> |
+                                        <i class="bi bi-tag"></i> <span th:text="${pelicula.genero}"></span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Formulario de valoración -->
+                        <form th:action="@{/valoraciones/editar/{id}(id=${valoracion.idValoracion})}" method="post">
+                            <!-- Puntuación -->
+                            <div class="mb-4">
+                                <label for="puntuacion" class="form-label">
+                                    <strong>Puntuación <span class="text-danger">*</span></strong>
+                                </label>
+                                <div class="d-flex align-items-center gap-3">
+                                    <input type="range"
+                                           class="form-range flex-grow-1"
+                                           min="1"
+                                           max="10"
+                                           step="1"
+                                           id="puntuacion"
+                                           name="puntuacion"
+                                           th:value="${valoracion.puntuacion}"
+                                           required
+                                           oninput="document.getElementById('puntuacionValor').textContent = this.value">
+                                    <div class="badge bg-warning text-dark fs-4" style="min-width: 60px;">
+                                        <i class="bi bi-star-fill"></i>
+                                        <span id="puntuacionValor" th:text="${valoracion.puntuacion}"></span>/10
+                                    </div>
+                                </div>
+                                <small class="text-muted">Desliza para seleccionar tu puntuación del 1 al 10</small>
+                            </div>
+
+                            <!-- Comentario -->
+                            <div class="mb-4">
+                                <label for="comentario" class="form-label">
+                                    <strong>Comentario</strong> <small class="text-muted">(opcional)</small>
+                                </label>
+                                <textarea class="form-control"
+                                          id="comentario"
+                                          name="comentario"
+                                          rows="5"
+                                          maxlength="500"
+                                          placeholder="Escribe tu opinión sobre la película..."
+                                          th:text="${valoracion.comentario}"></textarea>
+                                <small class="text-muted">Máximo 500 caracteres</small>
+                            </div>
+
+                            <!-- Botones -->
+                            <div class="d-flex gap-2 justify-content-end">
+                                <a th:href="@{/valoraciones/vistas}" class="btn btn-secondary">
+                                    <i class="bi bi-x-circle"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="bi bi-check-circle"></i> Actualizar valoración
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

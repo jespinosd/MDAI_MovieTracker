@@ -2,7 +2,10 @@ package es.unex.cum.mdai.movieTracker.data.controllers;
 
 import es.unex.cum.mdai.movieTracker.data.model.Pelicula;
 import es.unex.cum.mdai.movieTracker.data.model.Usuario;
+import es.unex.cum.mdai.movieTracker.data.model.Valoracion;
+import es.unex.cum.mdai.movieTracker.data.services.ColeccionService;
 import es.unex.cum.mdai.movieTracker.data.services.PeliculaService;
+import es.unex.cum.mdai.movieTracker.data.services.ValoracionService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,10 +22,16 @@ import java.util.stream.Collectors;
 public class PeliculaController {
 
     private final PeliculaService peliculaService;
+    private final ValoracionService valoracionService;
+    private final ColeccionService coleccionService;
 
     @Autowired
-    public PeliculaController(PeliculaService peliculaService) {
+    public PeliculaController(PeliculaService peliculaService,
+                             ValoracionService valoracionService,
+                             ColeccionService coleccionService) {
         this.peliculaService = peliculaService;
+        this.valoracionService = valoracionService;
+        this.coleccionService = coleccionService;
     }
 
     // Página principal - Catálogo de películas
@@ -110,8 +119,26 @@ public class PeliculaController {
                 Pelicula pelicula = peliculaOpt.get();
                 Double valoracionMedia = peliculaService.obtenerValoracionMedia(id);
 
+                // Obtener todas las valoraciones de la película
+                List<Valoracion> valoraciones = valoracionService.findByPelicula(id);
+
+                // Si hay usuario logueado, verificar si ya valoró esta película y si está en su colección
+                Valoracion valoracionUsuario = null;
+                boolean enColeccion = false;
+                if (usuario != null) {
+                    Optional<Valoracion> valOpt = valoracionService.findByUsuarioAndPelicula(
+                            usuario.getIdUsuario(), id);
+                    if (valOpt.isPresent()) {
+                        valoracionUsuario = valOpt.get();
+                    }
+                    enColeccion = coleccionService.peliculaEstaEnColeccion(usuario.getIdUsuario(), id);
+                }
+
                 model.addAttribute("pelicula", pelicula);
                 model.addAttribute("valoracionMedia", valoracionMedia);
+                model.addAttribute("valoraciones", valoraciones);
+                model.addAttribute("valoracionUsuario", valoracionUsuario);
+                model.addAttribute("enColeccion", enColeccion);
                 model.addAttribute("usuario", usuario); // Puede ser null
                 model.addAttribute("logueado", usuario != null);
                 return "detalle-pelicula";

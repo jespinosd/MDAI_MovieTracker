@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <!-- Navbar para usuarios logueados -->
+    <nav th:fragment="navbar-logueado" class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/peliculas}">
+                <i class="bi bi-film"></i> MovieTracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarAutenticado">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarAutenticado">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/peliculas}" th:classappend="${currentPage == 'catalogo'} ? 'active' : ''">
+                            <i class="bi bi-grid"></i> Catálogo
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/coleccion}" th:classappend="${currentPage == 'coleccion'} ? 'active' : ''">
+                            <i class="bi bi-collection"></i> Mi Colección
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/usuarios/perfil}" th:classappend="${currentPage == 'perfil'} ? 'active' : ''">
+                            <i class="bi bi-person"></i> Perfil
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/usuarios/buscar}" th:classappend="${currentPage == 'buscar'} ? 'active' : ''">
+                            <i class="bi bi-search"></i> Buscar Usuarios
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/usuarios/logout}">
+                            <i class="bi bi-box-arrow-right"></i> Cerrar Sesión
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Navbar para usuarios NO logueados -->
+    <nav th:fragment="navbar-publico" class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/peliculas}">
+                <i class="bi bi-film"></i> MovieTracker
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNoAutenticado">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNoAutenticado">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/peliculas}">
+                            <i class="bi bi-grid"></i> Catálogo
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/usuarios/login}">
+                            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/usuarios/registro}">
+                            <i class="bi bi-person-plus"></i> Registrarse
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</body>
+</html>
