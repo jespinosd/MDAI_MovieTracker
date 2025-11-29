@@ -61,6 +61,16 @@ public class PeliculaServiceImpl implements PeliculaService {
             throw new IllegalArgumentException("El género es obligatorio");
         }
 
+        // Validar sinopsis
+        if (pelicula.getSinopsis() == null || pelicula.getSinopsis().trim().isEmpty()) {
+            throw new IllegalArgumentException("La sinopsis es obligatoria");
+        }
+
+        // Validar path de imagen
+        if (pelicula.getPathImagen() == null || pelicula.getPathImagen().trim().isEmpty()) {
+            throw new IllegalArgumentException("La imagen es obligatoria");
+        }
+
         return peliculaRepository.save(pelicula);
     }
 
@@ -85,6 +95,9 @@ public class PeliculaServiceImpl implements PeliculaService {
 
     @Override
     public List<Pelicula> findByAnio(int anio) {
+        if (anio < 1800 || anio > 2100) {
+            return List.of();
+        }
         return peliculaRepository.findByAnio(anio);
     }
 
@@ -153,7 +166,7 @@ public class PeliculaServiceImpl implements PeliculaService {
                     .collect(Collectors.toList());
         }
 
-        if (anio != null && anio > 0) {
+        if (anio != null && anio > 0 && anio >= 1800 && anio <= 2100) {
             peliculas = peliculas.stream()
                     .filter(p -> p.getAnio() == anio)
                     .collect(Collectors.toList());
@@ -165,6 +178,9 @@ public class PeliculaServiceImpl implements PeliculaService {
     // Búsqueda por valoración
     @Override
     public List<Pelicula> findByAverageRatingGreaterThanEqual(double puntuacion) {
+        if (puntuacion < 0 || puntuacion > 10) {
+            return List.of();
+        }
         return peliculaRepository.findByAverageRatingGreaterThanEqual(puntuacion);
     }
 

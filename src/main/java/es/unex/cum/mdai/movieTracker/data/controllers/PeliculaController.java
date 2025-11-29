@@ -31,6 +31,7 @@ public class PeliculaController {
                                   @RequestParam(required = false) String tipo,
                                   @RequestParam(required = false) String genero,
                                   @RequestParam(required = false) Integer anio,
+                                  @RequestParam(required = false) Double valoracionMinima,
                                   @RequestParam(required = false) String ordenar,
                                   HttpSession session,
                                   Model model) {
@@ -55,6 +56,14 @@ public class PeliculaController {
         // Listado completo
         else {
             peliculas = peliculaService.findAll();
+        }
+
+        // Filtrar por valoración mínima si se especifica
+        if (valoracionMinima != null && valoracionMinima >= 0 && valoracionMinima <= 10) {
+            peliculas = peliculas.stream()
+                    .filter(p -> peliculaService.obtenerValoracionMedia(p.getIdPelicula()) >= valoracionMinima)
+                    .collect(Collectors.toList());
+            model.addAttribute("valoracionMinima", valoracionMinima);
         }
 
         // Ordenar resultados
@@ -196,10 +205,12 @@ public class PeliculaController {
             redirectAttributes.addFlashAttribute("mensaje", "Película actualizada correctamente");
             return "redirect:/peliculas/" + id;
         } catch (IllegalArgumentException e) {
-            redirectAttributes.addFlashAttribute("error", e.getMessage());
+            // Captura errores de validación (título vacío, año inválido, etc.)
+            redirectAttributes.addFlashAttribute("error", "Error de validación: " + e.getMessage());
             return "redirect:/peliculas/editar/" + id;
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error inesperado al actualizar la película");
+            // Captura cualquier otro error inesperado
+            redirectAttributes.addFlashAttribute("error", "Error inesperado al actualizar la película: " + e.getMessage());
             return "redirect:/peliculas/editar/" + id;
         }
     }

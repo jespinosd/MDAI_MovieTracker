@@ -103,6 +103,13 @@
                                 </select>
                             </div>
                             <div class="mb-3">
+                                <label class="form-label fw-bold">Valoración mínima</label>
+                                <input type="number" class="form-control form-control-sm" name="valoracionMinima"
+                                       th:value="${valoracionMinima}" placeholder="0-10"
+                                       min="0" max="10" step="0.5">
+                                <small class="text-muted">Películas con ≥ esta nota</small>
+                            </div>
+                            <div class="mb-3">
                                 <label class="form-label fw-bold">Ordenar</label>
                                 <select class="form-select form-select-sm" name="ordenar">
                                     <option value="">Por defecto</option>
