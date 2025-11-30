@@ -1,6 +1,8 @@
 package es.unex.cum.mdai.movieTracker.data.services;
 
+import es.unex.cum.mdai.movieTracker.data.model.Coleccion;
 import es.unex.cum.mdai.movieTracker.data.model.Pelicula;
+import es.unex.cum.mdai.movieTracker.data.repository.ColeccionRepository;
 import es.unex.cum.mdai.movieTracker.data.repository.PeliculaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,10 +16,13 @@ import java.util.stream.Collectors;
 public class PeliculaServiceImpl implements PeliculaService {
 
     private final PeliculaRepository peliculaRepository;
+    private final ColeccionRepository coleccionRepository;
 
     @Autowired
-    public PeliculaServiceImpl(PeliculaRepository peliculaRepository) {
+    public PeliculaServiceImpl(PeliculaRepository peliculaRepository,
+                              ColeccionRepository coleccionRepository) {
         this.peliculaRepository = peliculaRepository;
+        this.coleccionRepository = coleccionRepository;
     }
 
     // CRUD básico
@@ -80,7 +85,15 @@ public class PeliculaServiceImpl implements PeliculaService {
         if (id == null || id <= 0) {
             throw new IllegalArgumentException("El ID debe ser válido");
         }
-        // El cascade se encarga de eliminar las valoraciones asociadas
+
+        // Primero, eliminar la película de todas las colecciones que la contengan
+        List<Coleccion> coleccionesConPelicula = coleccionRepository.findByListaPeliculas_IdPelicula(id);
+        for (Coleccion coleccion : coleccionesConPelicula) {
+            coleccion.getListaPeliculas().removeIf(p -> p.getIdPelicula().equals(id));
+            coleccionRepository.save(coleccion);
+        }
+
+        // Ahora sí podemos eliminar la película (el cascade se encarga de eliminar las valoraciones asociadas)
         peliculaRepository.deleteById(id);
     }
 
