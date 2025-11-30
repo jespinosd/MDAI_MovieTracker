@@ -68,8 +68,6 @@ Incluye cierre de sesión y modificación de los datos del usuario. Además, las
 
 - Al **eliminar una película** o serie del catálogo, se eliminará de todas las colecciones y se borrarán todas las valoraciones asociadas a ese título.
 
-- Al **eliminar una colección**, no se eliminará el usuario.
-
 
 ## Funcionalidades opcionales, recomendables o futuribles
 
@@ -105,11 +103,64 @@ recibir **valoraciones** de distintos usuarios.
 > La relación entre **colección** y **película** es **muchos a muchos** y se materializa con una **tabla intermedia (PK (idColeccion, idPelicula)) que Spring Boot/Hibernate crea 
 automáticamente** a partir del @ManyToMany. Para coherencia, se asume **una única valoración por usuario y película**.
 
-- Al **eliminar un usuario**, se eliminan su colección y **todas sus valoraciones**. 
+- Al **eliminar un usuario**, se eliminan su colección y **todas sus valoraciones**. Al eliminarse la colección, desaparecen los enlaces con sus películas, pero no las películas en sí.
 
 - Al **eliminar una película** del catálogo, se quita de **todas las colecciones** y se borran sus **valoraciones**. 
 
-- Al **eliminar una colección, no se elimina el usuario**; solamente desaparecen los enlaces con sus películas.
+
+## Relación Tests - Casos de uso / funcionalidades
+
+### USUARIO
+- Autenticación / validación de credenciales
+    - `testFindByUsernameAndPassword`
+
+- Registro de usuario
+    - `testGuardarUsuario`
+
+- Consulta / obtención de usuario por id, username, email, nombre (exacto y parcial)
+    - `testFindByIdUsuario`, `testFindByUsername`, `testFindByEmail`, `testFindByNombre`, `testFindByNombreContainingIgnoreCase`, `testFindByUsernameContainingIgnoreCase`
+
+- Actualización de usuario / cambio de contraseña
+    - `testActualizarUsuario`
+
+- Eliminación de usuario y borrado en cascada (colección + valoraciones)
+    - `testEliminarUsuario`
+
+### PELÍCULA
+- Alta / obtención / edición / borrado de película (CRUD)
+    - `testGuardarYRecuperarPelicula`, `testFindByIdPelicula`, `testActualizarPelicula`, `testEliminarPelicula`
+
+- Búsquedas de películas (título, año, director, género)
+    - exactas:
+        `testFindByTitulo`, `testFindByAnio`, `testFindByAnio_Multiple`, `testFindByDirector`, `testFindByGenero`
+
+    - parciales y combinadas:
+        `testFindByTituloContainingIgnoreCase`, `testFindByDirectorContainingIgnoreCase`, `testFindByGeneroContainingIgnoreCase`, `testFindByTituloContainingIgnoreCaseAndAnio`, `testFindByTituloContainingIgnoreCaseAndDirectorContainingIgnoreCase`
+
+- Cálculo y consultas por valoración media
+    - `testFindAverageRatingByPeliculaId`, `testFindByAverageRatingGreaterThanEqual`
+
+### VALORACIÓN
+- CRUD de valoraciones, consulta por usuario/película y par (usuario, película)
+    - `testCrudValoracion`, `testFindByUsuario_IdUsuario`, `testFindByPelicula_IdPelicula`, `testFindByUsuarioAndPelicula`
+
+### COLECCIÓN
+- Gestión de colección: recuperación por usuario, existencia, consultas sobre listas de películas
+    - `testFindByUsuario_IdUsuario`, `testExistsByUsuario_IdUsuario`, `testFindByListaPeliculas_IdPelicula`
+
+- Comprobar si una película está en la colección de un usuario
+    - `testExistsByUsuario_IdUsuarioAndListaPeliculas_IdPelicula`
+
+- Recuperación de colección por id y propietario
+    - `testFindByIdColeccionAndUsuario_IdUsuario`
+
+- CRUD de colección (creación automática al crear usuario, añadir/quitar películas, eliminación de colección a nivel de repositorio)
+    - `testCrudColeccion`
+
+**Nota:** el comportamiento real del sistema, según los tests y la implementación, es:
+- La colección del usuario se elimina cuando se elimina el usuario (`UsuarioRepositoryTest.java` → `testEliminarUsuario`).
+- Hay tests de repositorio que eliminan una colección directamente para verificar la operación a nivel de repositorio (`ColeccionRepositoryTest.java` → `testCrudColeccion`), pero en el uso funcional esperado no existe una opción de interfaz para borrar la colección de un usuario de forma independiente: la eliminación funcional ocurre al borrar el usuario.
+
 
 ## Configuración para la conexión a la BD e inserción de datos iniciales para los tests
 
