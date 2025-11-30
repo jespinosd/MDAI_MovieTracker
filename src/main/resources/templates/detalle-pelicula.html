@@ -125,14 +125,9 @@
                                class="btn btn-primary">
                                 <i class="bi bi-pencil"></i> Editar película
                             </a>
-                            <form th:action="@{/peliculas/eliminar/{id}(id=${pelicula.idPelicula})}"
-                                  method="post"
-                                  style="display: inline;"
-                                  onsubmit="return confirm('¿Estás seguro de eliminar esta película? Se eliminarán todas las valoraciones asociadas.');">
-                                <button type="submit" class="btn btn-danger">
-                                    <i class="bi bi-trash"></i> Eliminar película
-                                </button>
-                            </form>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarPeliculaModal">
+                                <i class="bi bi-trash"></i> Eliminar película
+                            </button>
                             <a th:href="@{/peliculas}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left"></i> Volver
                             </a>
@@ -203,6 +198,40 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para eliminar película -->
+    <div class="modal fade" id="eliminarPeliculaModal" tabindex="-1" aria-labelledby="eliminarPeliculaModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-danger text-white">
+                    <h5 class="modal-title" id="eliminarPeliculaModalLabel">
+                        <i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación de Película
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>¿Estás seguro de que deseas eliminar esta película del catálogo?</strong></p>
+                    <p class="text-danger">Esta acción eliminará permanentemente:</p>
+                    <ul>
+                        <li>La película del catálogo</li>
+                        <li>La película de todas las colecciones de usuarios</li>
+                        <li>Todas las valoraciones asociadas a esta película</li>
+                    </ul>
+                    <p class="fw-bold">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form th:action="@{/peliculas/eliminar/{id}(id=${pelicula.idPelicula})}"
+                          method="post"
+                          style="display: inline;">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="bi bi-trash"></i> Sí, eliminar película
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>

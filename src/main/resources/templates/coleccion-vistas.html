@@ -112,19 +112,59 @@
                                            title="Editar valoración">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <form th:action="@{/valoraciones/eliminar/{id}(id=${valoracion.idValoracion})}"
-                                              method="post"
-                                              style="display: inline;"
-                                              onsubmit="return confirm('¿Estás seguro de eliminar esta valoración?');">
-                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Eliminar valoración">
-                                                <i class="bi bi-trash"></i>
-                                            </button>
-                                        </form>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                data-bs-toggle="modal"
+                                                th:attr="data-bs-target='#eliminarValoracionModal' + ${valoracion.idValoracion}"
+                                                title="Eliminar valoración">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para eliminar valoración -->
+    <div th:each="valoracion : ${valoraciones}" class="modal fade" th:id="'eliminarValoracionModal' + ${valoracion.idValoracion}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning">
+                    <h5 class="modal-title">
+                        <i class="bi bi-exclamation-triangle"></i> Confirmar Eliminación de Valoración
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>¿Estás seguro de que deseas eliminar esta valoración?</strong></p>
+                    <div class="alert alert-light border">
+                        <p class="mb-1"><strong>Película:</strong> <span th:text="${valoracion.pelicula.titulo}"></span></p>
+                        <p class="mb-1"><strong>Tu puntuación:</strong> <span th:text="${valoracion.puntuacion}"></span>/10</p>
+                        <p class="mb-0" th:if="${valoracion.comentario != null and !valoracion.comentario.isEmpty()}">
+                            <strong>Tu comentario:</strong> <span th:text="${valoracion.comentario}"></span>
+                        </p>
+                    </div>
+                    <p class="text-warning">Esta acción eliminará permanentemente:</p>
+                    <ul>
+                        <li>Tu valoración de esta película</li>
+                        <li>Tu comentario asociado (si existe)</li>
+                        <li>Afectará a la valoración media de la película</li>
+                    </ul>
+                    <p class="fw-bold">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form th:action="@{/valoraciones/eliminar/{id}(id=${valoracion.idValoracion})}"
+                          method="post"
+                          style="display: inline;">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-trash"></i> Sí, eliminar valoración
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
