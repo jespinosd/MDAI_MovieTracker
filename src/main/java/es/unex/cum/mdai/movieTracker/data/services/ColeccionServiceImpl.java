@@ -180,8 +180,9 @@ public class ColeccionServiceImpl implements ColeccionService {
 
         Optional<Coleccion> coleccionOpt = findByUsuario(idUsuario);
 
+        // Comprobar si la colección existe (pertenece a un usuario)
         if (coleccionOpt.isEmpty()) {
-            return new ArrayList<>();
+            throw new IllegalArgumentException("El usuario no existe o no tiene colección");
         }
 
         return coleccionOpt.get().getListaPeliculas();
