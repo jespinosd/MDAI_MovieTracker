@@ -52,7 +52,7 @@
             </a>
         </div>
 
-        <div th:if="${!#lists.isEmpty(peliculas)}" class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        <div th:if="${!#lists.isEmpty(peliculas)}" class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
             <div class="col" th:each="pelicula : ${peliculas}">
                 <div class="card shadow-sm h-100">
                     <!-- Imagen -->
