@@ -58,16 +58,19 @@
                     <div class="row g-0">
                         <!-- Imagen -->
                         <div class="col-md-2">
-                            <div th:if="${valoracion.pelicula.pathImagen != null and !valoracion.pelicula.pathImagen.isEmpty()}"
-                                 class="h-100 d-flex align-items-center justify-content-center">
-                                <img th:src="${valoracion.pelicula.pathImagen}"
-                                     class="img-fluid rounded-start"
-                                     style="max-height: 200px; object-fit: cover;"
+                            <div class="rounded-start bg-secondary position-relative"
+                                 style="width: 100%; aspect-ratio: 2/3; overflow: hidden;">
+
+                                <img th:if="${valoracion.pelicula.pathImagen != null and !valoracion.pelicula.pathImagen.isEmpty()}"
+                                     th:src="${valoracion.pelicula.pathImagen}"
+                                     class="img-fluid"
+                                     style="width: 100%; height: 100%; object-fit: cover; object-position: center;"
                                      th:alt="${valoracion.pelicula.titulo}">
-                            </div>
-                            <div th:if="${valoracion.pelicula.pathImagen == null or valoracion.pelicula.pathImagen.isEmpty()}"
-                                 class="h-100 d-flex align-items-center justify-content-center bg-secondary text-white">
-                                <i class="bi bi-film" style="font-size: 3rem;"></i>
+
+                                <div th:if="${valoracion.pelicula.pathImagen == null or valoracion.pelicula.pathImagen.isEmpty()}"
+                                     class="d-flex align-items-center justify-content-center w-100 h-100 text-white">
+                                    <i class="bi bi-film" style="font-size: 3rem;"></i>
+                                </div>
                             </div>
                         </div>
 
