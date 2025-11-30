@@ -39,7 +39,7 @@
                         <i class="bi bi-film text-primary" style="font-size: 3rem;"></i>
                         <h3 class="mt-3 mb-0" th:text="${totalPeliculas}">0</h3>
                         <p class="text-muted mb-0">Total de Películas</p>
-                        <a th:href="@{/coleccion/todas}" class="btn btn-outline-primary btn-sm mt-3">
+                        <a th:href="@{/coleccion/todas}" class="btn btn-primary btn-sm mt-3">
                             <i class="bi bi-eye"></i> Ver todas
                         </a>
                     </div>
@@ -51,7 +51,7 @@
                         <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
                         <h3 class="mt-3 mb-0 text-success" th:text="${totalVistas}">0</h3>
                         <p class="text-muted mb-0">Películas Vistas</p>
-                        <a th:href="@{/coleccion/vistas}" class="btn btn-outline-success btn-sm mt-3">
+                        <a th:href="@{/coleccion/vistas}" class="btn btn-success btn-sm mt-3">
                             <i class="bi bi-star"></i> Ver valoraciones
                         </a>
                     </div>
@@ -63,7 +63,7 @@
                         <i class="bi bi-clock-history text-warning" style="font-size: 3rem;"></i>
                         <h3 class="mt-3 mb-0 text-warning" th:text="${totalPendientes}">0</h3>
                         <p class="text-muted mb-0">Pendientes de Ver</p>
-                        <a th:href="@{/coleccion/pendientes}" class="btn btn-outline-warning btn-sm mt-3">
+                        <a th:href="@{/coleccion/pendientes}" class="btn btn-warning btn-sm mt-3">
                             <i class="bi bi-list-check"></i> Ver pendientes
                         </a>
                     </div>
@@ -80,14 +80,14 @@
                 <div class="row g-3">
                     <div class="col-md-6">
                         <div class="d-grid">
-                            <a th:href="@{/peliculas}" class="btn btn-outline-primary">
+                            <a th:href="@{/peliculas}" class="btn btn-primary">
                                 <i class="bi bi-plus-circle"></i> Explorar catálogo para agregar películas
                             </a>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="d-grid">
-                            <a th:href="@{/coleccion/pendientes}" class="btn btn-outline-warning">
+                            <a th:href="@{/coleccion/pendientes}" class="btn btn-warning">
                                 <i class="bi bi-star"></i> Valorar películas pendientes
                             </a>
                         </div>

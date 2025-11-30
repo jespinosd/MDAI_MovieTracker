@@ -152,9 +152,9 @@
         <div class="card shadow mt-4">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="bi bi-chat-square-text"></i> Valoraciones de usuarios</h5>
-                <span class="badge bg-light text-primary">
-                    <span th:text="${#lists.size(valoraciones)}"></span> valoración(es)
-                </span>
+                <span class="badge bg-light" style="color: black !important;">
+    <span th:text="${#lists.size(valoraciones)}" style="color: black !important;"></span> valoración(es)
+</span>
             </div>
             <div class="card-body">
                 <!-- Si no hay valoraciones -->

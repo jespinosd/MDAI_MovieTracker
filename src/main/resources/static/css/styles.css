@@ -292,3 +292,104 @@ a:hover {
 .container {
     animation: slideUp 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
+
+/* =========================================
+   NUEVOS AJUSTES (Añadir al final de styles.css)
+   ========================================= */
+
+/* 1. CORRECCIÓN DE ENCABEZADOS (HEADERS) */
+/* Aplicar estilo gradiente y texto blanco a los headers verdes y rojos */
+.card-header.bg-success {
+    background: linear-gradient(135deg, #198754, #157347) !important;
+    color: white !important;
+    border-bottom: none;
+}
+
+.card-header.bg-danger {
+    background: linear-gradient(135deg, #dc3545, #bb2d3b) !important;
+    color: white !important;
+    border-bottom: none;
+}
+
+/* Forzar que el texto y los iconos dentro de estos headers sean blancos */
+/* Esto arregla el problema de "letras negras" en el fondo verde */
+.bg-success h1, .bg-success h2, .bg-success h3, .bg-success h4, .bg-success h5, .bg-success h6,
+.bg-success i, .bg-success span,
+.bg-danger h1, .bg-danger h2, .bg-danger h3, .bg-danger h4, .bg-danger h5, .bg-danger h6,
+.bg-danger i, .bg-danger span {
+    color: white !important;
+}
+
+/* 2. ESTILOS DE BOTONES SÓLIDOS (Estilo "siempre visible") */
+/* Estilo personalizado para botones Success (Verdes) */
+.btn-success {
+    background: linear-gradient(to bottom right, #198754, #157347);
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(25, 135, 84, 0.3);
+    color: white !important;
+}
+.btn-success:hover {
+    background: linear-gradient(to bottom right, #157347, #198754);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 12px -1px rgba(25, 135, 84, 0.4);
+}
+
+/* Estilo personalizado para botones Danger (Rojos) */
+.btn-danger {
+    background: linear-gradient(to bottom right, #dc3545, #bb2d3b);
+    border: none;
+    box-shadow: 0 4px 6px -1px rgba(220, 53, 69, 0.3);
+    color: white !important;
+}
+.btn-danger:hover {
+    background: linear-gradient(to bottom right, #bb2d3b, #dc3545);
+    transform: translateY(-2px);
+}
+
+/* Estilo personalizado para botones Warning (Amarillos) */
+.btn-warning {
+    background: linear-gradient(to bottom right, #ffc107, #ffca2c);
+    border: none;
+    color: #000 !important; /* Texto negro para mejor contraste en amarillo */
+    font-weight: 700;
+    box-shadow: 0 4px 6px -1px rgba(255, 193, 7, 0.3);
+}
+.btn-warning:hover {
+    transform: translateY(-2px);
+    background: linear-gradient(to bottom right, #ffca2c, #ffc107);
+}
+
+/* 3. MEJORA VISUAL DE ESTADÍSTICAS (Perfil) */
+/* Hace que los recuadros de números se vean más limpios y los números más grandes */
+.border.rounded.p-3 {
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.05) !important; /* Borde casi invisible */
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.border.rounded.p-3:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.border.rounded.p-3 h3 {
+    font-weight: 800;
+    font-size: 2.5rem; /* Números más grandes */
+    margin-bottom: 0.2rem;
+}
+
+/* Estilo para el botón AZUL SÓLIDO */
+.btn-blue {
+    background: linear-gradient(to bottom right, #0d6efd, #0a58ca) !important;
+    border: none !important;
+    color: white !important;
+    box-shadow: 0 4px 6px -1px rgba(13, 110, 253, 0.3);
+}
+
+.btn-blue:hover {
+    background: linear-gradient(to bottom right, #0a58ca, #0d6efd) !important;
+    transform: translateY(-2px);
+    color: white !important;
+    box-shadow: 0 8px 12px -1px rgba(13, 110, 253, 0.4);
+}
