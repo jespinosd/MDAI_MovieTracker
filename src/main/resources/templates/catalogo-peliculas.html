@@ -132,7 +132,7 @@
                 </div>
 
                 <!-- Grid de películas -->
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 g-4">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-5 g-4">
                     <div class="col" th:each="pelicula : ${peliculas}">
                         <div class="card h-100 shadow-sm">
                             <a th:href="@{/peliculas/{id}(id=${pelicula.idPelicula})}" class="text-decoration-none">
