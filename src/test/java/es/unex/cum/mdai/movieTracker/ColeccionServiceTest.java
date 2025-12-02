@@ -414,24 +414,24 @@ public class ColeccionServiceTest {
         assertNotNull(peliculasJuan);
         assertFalse(peliculasJuan.isEmpty());
 
-        // ID usuario null
+        // Usuario inexistente o con colección vacía - debe devolver lista vacía en lugar de excepción
+        List<Pelicula> peliculasUsuarioInexistente = coleccionService.obtenerPeliculasDeColeccion(99999L);
+        assertNotNull(peliculasUsuarioInexistente, "Debe devolver una lista (vacía) incluso si el usuario no existe");
+        assertTrue(peliculasUsuarioInexistente.isEmpty(), "La lista debe estar vacía para usuario inexistente");
+
+        // ID usuario null - debe lanzar excepción
         assertThrows(IllegalArgumentException.class, () -> {
             coleccionService.obtenerPeliculasDeColeccion(null);
         }, "Debe lanzar excepción cuando el ID del usuario es null");
 
-        // ID usuario negativo
+        // ID usuario negativo - debe lanzar excepción
         assertThrows(IllegalArgumentException.class, () -> {
             coleccionService.obtenerPeliculasDeColeccion(-1L);
         }, "Debe lanzar excepción cuando el ID del usuario es negativo");
 
-        // ID usuario cero
+        // ID usuario cero - debe lanzar excepción
         assertThrows(IllegalArgumentException.class, () -> {
             coleccionService.obtenerPeliculasDeColeccion(0L);
         }, "Debe lanzar excepción cuando el ID del usuario es cero");
-
-        // Usuario que no existe
-        assertThrows(IllegalArgumentException.class, () -> {
-            coleccionService.obtenerPeliculasDeColeccion(99999L);
-        }, "Debe lanzar excepción cuando el usuario no existe");
     }
 }
