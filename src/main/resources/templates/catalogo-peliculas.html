@@ -107,10 +107,19 @@
 
                         <hr>
 
-                        <!-- Solo mostrar botón de agregar película si está logueado -->
-                        <a th:if="${logueado}" th:href="@{/peliculas/agregar}" class="btn btn-success btn-sm w-100">
+                        <!-- Botón de agregar película: siempre visible pero deshabilitado si no es ADMIN -->
+                        <a th:if="${logueado && usuario != null && usuario.esAdmin()}"
+                           th:href="@{/peliculas/agregar}"
+                           class="btn btn-success btn-sm w-100">
                             <i class="bi bi-plus-circle"></i> Agregar Película
                         </a>
+                        <button th:if="${logueado && (usuario == null || !usuario.esAdmin())}"
+                                type="button"
+                                class="btn btn-success btn-sm w-100"
+                                disabled
+                                title="Solo los administradores pueden agregar películas">
+                            <i class="bi bi-plus-circle"></i> Agregar Película
+                        </button>
                         <div th:if="${!logueado}" class="alert alert-info p-2 mb-0" style="font-size: 0.85rem;">
                             <i class="bi bi-info-circle"></i>
                             <a th:href="@{/usuarios/login}" class="alert-link">Inicia sesión</a> para gestionar películas
@@ -168,16 +177,33 @@
                                        class="btn btn-sm btn-primary">
                                         <i class="bi bi-eye"></i> Ver
                                     </a>
-                                    <!-- Solo mostrar botones de editar/eliminar si está logueado -->
+                                    <!-- Botones de editar/eliminar: habilitados solo para ADMIN -->
                                     <div th:if="${logueado}">
-                                        <a th:href="@{/peliculas/editar/{id}(id=${pelicula.idPelicula})}"
+                                        <a th:if="${usuario != null && usuario.esAdmin()}"
+                                           th:href="@{/peliculas/editar/{id}(id=${pelicula.idPelicula})}"
                                            class="btn btn-sm btn-outline-secondary">
                                             <i class="bi bi-pencil"></i>
                                         </a>
-                                        <button type="button"
+                                        <button th:if="${usuario == null || !usuario.esAdmin()}"
+                                                type="button"
+                                                class="btn btn-sm btn-outline-secondary"
+                                                disabled
+                                                title="Solo los administradores pueden editar películas">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+
+                                        <button th:if="${usuario != null && usuario.esAdmin()}"
+                                                type="button"
                                                 class="btn btn-sm btn-outline-danger"
                                                 data-bs-toggle="modal"
                                                 th:attr="data-bs-target='#eliminarPeliculaModal' + ${pelicula.idPelicula}">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                        <button th:if="${usuario == null || !usuario.esAdmin()}"
+                                                type="button"
+                                                class="btn btn-sm btn-outline-danger"
+                                                disabled
+                                                title="Solo los administradores pueden eliminar películas">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
@@ -185,7 +211,7 @@
                                         <button class="btn btn-sm btn-outline-secondary" disabled title="Inicia sesión para gestionar">
                                             <i class="bi bi-pencil"></i>
                                         </button>
-                                        <button class="btn btn-sm btn-outline-secondary" disabled title="Inicia sesión para gestionar">
+                                        <button class="btn btn-sm btn-outline-danger" disabled title="Inicia sesión para gestionar">
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </div>
@@ -198,8 +224,8 @@
         </div>
     </div>
 
-    <!-- Modales de eliminación para cada película -->
-    <div th:each="pelicula : ${peliculas}">
+    <!-- Modales de eliminación para cada película (solo para ADMIN) -->
+    <div th:if="${logueado && usuario != null && usuario.esAdmin()}" th:each="pelicula : ${peliculas}">
         <div class="modal fade" th:id="'eliminarPeliculaModal' + ${pelicula.idPelicula}" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">

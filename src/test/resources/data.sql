@@ -24,11 +24,11 @@ INSERT INTO peliculas (titulo, anio, director, genero, sinopsis, path_imagen) VA
 ('El Último Tango en París', 1972, 'Bernardo Bertolucci', 'Drama', 'Una historia de amor y pasión en París', '/img/tango.jpg');
 
 -- Usuarios necesarios para los tests
-INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password) VALUES
-('Alicia', 'Sánchez', 'Fernández', 'alicia.sanchez@test.com', 'alicia', 'aliciaPass!23'),
-('Juan', 'Pérez', 'García', 'juan.perez@test.com', 'juanp', 'secret'),
-('María', 'López', 'Ruiz', 'maria.lopez@test.com', 'maria', 'pwd'),
-('Alicia', 'Gómez', 'Ruiz', 'alicia4.gomez@test.com', 'alicia4', 'alicia4Pass');
+INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password, rol) VALUES
+('Alicia', 'Sánchez', 'Fernández', 'alicia.sanchez@test.com', 'alicia', 'aliciaPass!23', 'USER'),
+('Juan', 'Pérez', 'García', 'juan.perez@test.com', 'juanp', 'secret', 'USER'),
+('María', 'López', 'Ruiz', 'maria.lopez@test.com', 'maria', 'pwd', 'USER'),
+('Alicia', 'Gómez', 'Ruiz', 'alicia4.gomez@test.com', 'alicia4', 'alicia4Pass', 'USER');
 
 -- Crear colecciones para los usuarios (asociación uno-a-uno con usuarios)
 -- Se asume que Hibernate ha generado columnas en snake_case: id_usuario, id_coleccion

@@ -59,9 +59,15 @@
                             <i class="bi bi-exclamation-triangle"></i> Zona de Peligro
                         </h6>
                         <p class="small text-muted">Esta acción es irreversible</p>
-                        <button type="button" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#eliminarCuentaModal">
+                        <button th:if="${!usuario.esAdmin()}" type="button" class="btn btn-danger btn-sm w-100" data-bs-toggle="modal" data-bs-target="#eliminarCuentaModal">
                             <i class="bi bi-trash"></i> Eliminar Cuenta
                         </button>
+                        <button th:if="${usuario.esAdmin()}" type="button" class="btn btn-danger btn-sm w-100" disabled title="Los administradores no pueden eliminar su propia cuenta por seguridad del sistema">
+                            <i class="bi bi-trash"></i> Eliminar Cuenta
+                        </button>
+                        <small th:if="${usuario.esAdmin()}" class="text-muted d-block mt-2">
+                            <i class="bi bi-info-circle"></i> Los administradores no pueden eliminar su cuenta por seguridad
+                        </small>
                     </div>
                 </div>
             </div>

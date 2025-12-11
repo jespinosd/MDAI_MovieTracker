@@ -30,7 +30,8 @@
                             <i class="bi bi-person"></i> Perfil
                         </a>
                     </li>
-                    <li class="nav-item">
+                    <!-- Solo mostrar "Buscar Usuarios" si el usuario es ADMIN -->
+                    <li class="nav-item" th:if="${usuario != null && usuario.esAdmin()}">
                         <a class="nav-link" th:href="@{/usuarios/buscar}" th:classappend="${currentPage == 'buscar'} ? 'active' : ''">
                             <i class="bi bi-search"></i> Buscar Usuarios
                         </a>

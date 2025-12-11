@@ -30,6 +30,10 @@ public class Usuario {
     @Column(nullable = false)
     private String password;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Rol rol = Rol.USER;
+
     @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     private Coleccion coleccion;
 
@@ -48,6 +52,20 @@ public class Usuario {
         this.email = email;
         this.username = username;
         this.password = password;
+        this.rol = Rol.USER;
+
+        this.coleccion = new Coleccion(this);
+    }
+
+    // Constructor con rol
+    public Usuario(String nombre, String apellido1, String apellido2, String email, String username, String password, Rol rol) {
+        this.nombre = nombre;
+        this.apellido1 = apellido1;
+        this.apellido2 = apellido2;
+        this.email = email;
+        this.username = username;
+        this.password = password;
+        this.rol = rol;
 
         this.coleccion = new Coleccion(this);
     }
@@ -109,6 +127,14 @@ public class Usuario {
         this.password = password;
     }
 
+    public Rol getRol() {
+        return rol;
+    }
+
+    public void setRol(Rol rol) {
+        this.rol = rol;
+    }
+
     public Coleccion getColeccion() {
         return coleccion;
     }
@@ -123,5 +149,10 @@ public class Usuario {
 
     public void setListaValoraciones(List<Valoracion> listaValoraciones) {
         this.listaValoraciones = listaValoraciones;
+    }
+
+    // Método de utilidad para verificar si es admin
+    public boolean esAdmin() {
+        return this.rol == Rol.ADMIN;
     }
 }

@@ -154,10 +154,16 @@ public class PeliculaController {
 
     // Mostrar formulario para agregar película
     @GetMapping("/agregar")
-    public String mostrarFormularioAgregar(HttpSession session, Model model) {
+    public String mostrarFormularioAgregar(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return "redirect:/usuarios/login";
+        }
+
+        // Verificar que sea admin
+        if (!usuario.esAdmin()) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para agregar películas. Solo los administradores pueden hacerlo.");
+            return "redirect:/peliculas";
         }
 
         model.addAttribute("pelicula", new Pelicula());
@@ -173,6 +179,12 @@ public class PeliculaController {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return "redirect:/usuarios/login";
+        }
+
+        // Verificar que sea admin
+        if (!usuario.esAdmin()) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para agregar películas. Solo los administradores pueden hacerlo.");
+            return "redirect:/peliculas";
         }
 
         try {
@@ -197,6 +209,12 @@ public class PeliculaController {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return "redirect:/usuarios/login";
+        }
+
+        // Verificar que sea admin
+        if (!usuario.esAdmin()) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para editar películas. Solo los administradores pueden hacerlo.");
+            return "redirect:/peliculas";
         }
 
         try {
@@ -226,6 +244,12 @@ public class PeliculaController {
             return "redirect:/usuarios/login";
         }
 
+        // Verificar que sea admin
+        if (!usuario.esAdmin()) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para editar películas. Solo los administradores pueden hacerlo.");
+            return "redirect:/peliculas";
+        }
+
         try {
             pelicula.setIdPelicula(id);
             peliculaService.save(pelicula);
@@ -250,6 +274,12 @@ public class PeliculaController {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return "redirect:/usuarios/login";
+        }
+
+        // Verificar que sea admin
+        if (!usuario.esAdmin()) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para eliminar películas. Solo los administradores pueden hacerlo.");
+            return "redirect:/peliculas";
         }
 
         try {

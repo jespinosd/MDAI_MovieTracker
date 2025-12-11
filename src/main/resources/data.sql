@@ -148,28 +148,28 @@ WHERE NOT EXISTS (SELECT 1 FROM peliculas WHERE titulo = 'Volver al Futuro');
 -- ========================================
 -- INSERCIÓN DE USUARIOS DE EJEMPLO
 -- ========================================
-INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password)
-SELECT 'Admin', 'Sistema', NULL, 'admin@movietracker.com', 'admin', 'Admin123!'
+INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password, rol)
+SELECT 'Admin', 'Sistema', NULL, 'admin@movietracker.com', 'admin', 'Admin123!', 'ADMIN'
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE username = 'admin');
 
-INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password)
-SELECT 'Juan', 'García', 'López', 'juan.garcia@example.com', 'juangar', 'JuanPass123'
+INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password, rol)
+SELECT 'Juan', 'García', 'López', 'juan.garcia@example.com', 'juangar', 'JuanPass123', 'USER'
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE username = 'juangar');
 
-INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password)
-SELECT 'María', 'Martínez', 'Sánchez', 'maria.martinez@example.com', 'mariamtz', 'MariaPass123'
+INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password, rol)
+SELECT 'María', 'Martínez', 'Sánchez', 'maria.martinez@example.com', 'mariamtz', 'MariaPass123', 'USER'
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE username = 'mariamtz');
 
-INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password)
-SELECT 'Carlos', 'Rodríguez', 'Pérez', 'carlos.rodriguez@example.com', 'carlosr', 'CarlosPass123'
+INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password, rol)
+SELECT 'Carlos', 'Rodríguez', 'Pérez', 'carlos.rodriguez@example.com', 'carlosr', 'CarlosPass123', 'USER'
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE username = 'carlosr');
 
-INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password)
-SELECT 'Ana', 'Fernández', 'Gómez', 'ana.fernandez@example.com', 'anafernandez', 'AnaPass123'
+INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password, rol)
+SELECT 'Ana', 'Fernández', 'Gómez', 'ana.fernandez@example.com', 'anafernandez', 'AnaPass123', 'USER'
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE username = 'anafernandez');
 
-INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password)
-SELECT 'Luis', 'López', 'Díaz', 'luis.lopez@example.com', 'luislopez', 'LuisPass123'
+INSERT INTO usuarios (nombre, apellido1, apellido2, email, username, password, rol)
+SELECT 'Luis', 'López', 'Díaz', 'luis.lopez@example.com', 'luislopez', 'LuisPass123', 'USER'
 WHERE NOT EXISTS (SELECT 1 FROM usuarios WHERE username = 'luislopez');
 
 -- ========================================

@@ -1,5 +1,6 @@
 package es.unex.cum.mdai.movieTracker;
 
+import es.unex.cum.mdai.movieTracker.data.model.Rol;
 import es.unex.cum.mdai.movieTracker.data.model.Usuario;
 import es.unex.cum.mdai.movieTracker.data.services.UsuarioService;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,6 +80,7 @@ public class UsuarioServiceTest {
         assertNotNull(resultado.getIdUsuario(), "El usuario debe tener un ID asignado");
         assertEquals("Carlos", resultado.getNombre());
         assertEquals("carlosg", resultado.getUsername());
+        assertEquals(Rol.USER, resultado.getRol(), "El rol por defecto debe ser USER");
         assertTrue(usuarioService.existeUsername("carlosg"));
 
         // Usuario null

@@ -121,13 +121,32 @@
                                 <i class="bi bi-pencil"></i> Editar mi valoración
                             </a>
 
-                            <a th:href="@{/peliculas/editar/{id}(id=${pelicula.idPelicula})}"
+                            <!-- Botones de editar/eliminar película: habilitados solo para ADMIN -->
+                            <a th:if="${usuario != null && usuario.esAdmin()}"
+                               th:href="@{/peliculas/editar/{id}(id=${pelicula.idPelicula})}"
                                class="btn btn-primary">
                                 <i class="bi bi-pencil"></i> Editar película
                             </a>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarPeliculaModal">
+                            <button th:if="${usuario == null || !usuario.esAdmin()}"
+                                    type="button"
+                                    class="btn btn-primary"
+                                    disabled
+                                    title="Solo los administradores pueden editar películas">
+                                <i class="bi bi-pencil"></i> Editar película
+                            </button>
+
+                            <button th:if="${usuario != null && usuario.esAdmin()}"
+                                    type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#eliminarPeliculaModal">
                                 <i class="bi bi-trash"></i> Eliminar película
                             </button>
+                            <button th:if="${usuario == null || !usuario.esAdmin()}"
+                                    type="button"
+                                    class="btn btn-danger"
+                                    disabled
+                                    title="Solo los administradores pueden eliminar películas">
+                                <i class="bi bi-trash"></i> Eliminar película
+                            </button>
+
                             <a th:href="@{/peliculas}" class="btn btn-outline-secondary">
                                 <i class="bi bi-arrow-left"></i> Volver
                             </a>

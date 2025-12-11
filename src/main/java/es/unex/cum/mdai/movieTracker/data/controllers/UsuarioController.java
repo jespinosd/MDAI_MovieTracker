@@ -212,6 +212,12 @@ public class UsuarioController {
             return "redirect:/usuarios/login";
         }
 
+        // No permitir que el admin se elimine a sí mismo
+        if (usuario.esAdmin()) {
+            redirectAttributes.addFlashAttribute("error", "Los administradores no pueden eliminar su propia cuenta por seguridad del sistema.");
+            return "redirect:/usuarios/perfil";
+        }
+
         try {
             usuarioService.deleteById(usuario.getIdUsuario());
             session.invalidate();
@@ -228,10 +234,17 @@ public class UsuarioController {
     public String buscarUsuarios(@RequestParam(required = false) String query,
                                 @RequestParam(required = false) String tipo,
                                 HttpSession session,
-                                Model model) {
+                                Model model,
+                                RedirectAttributes redirectAttributes) {
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogueado");
         if (usuario == null) {
             return "redirect:/usuarios/login";
+        }
+
+        // Verificar que sea admin
+        if (!usuario.esAdmin()) {
+            redirectAttributes.addFlashAttribute("error", "No tienes permisos para buscar usuarios. Solo los administradores pueden hacerlo.");
+            return "redirect:/peliculas";
         }
 
         List<Usuario> usuarios;
@@ -249,6 +262,7 @@ public class UsuarioController {
         }
 
         model.addAttribute("usuarios", usuarios);
+        model.addAttribute("usuario", usuario);
         return "buscar-usuarios";
     }
 }
