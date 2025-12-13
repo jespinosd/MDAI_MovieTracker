@@ -101,10 +101,9 @@
                             <form th:if="${enColeccion}"
                                   th:action="@{/coleccion/eliminar/{id}(id=${pelicula.idPelicula})}"
                                   method="post"
-                                  style="display: inline;"
-                                  onsubmit="return confirm('¿Eliminar esta película de tu colección?');">
+                                  style="display: inline;">
                                 <input type="hidden" name="origen" value="detalle">
-                                <button type="submit" class="btn btn-outline-secondary">
+                                <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#quitarColeccionModal">
                                     <i class="bi bi-dash-circle"></i> Quitar de mi colección
                                 </button>
                             </form>
@@ -249,6 +248,36 @@
                           style="display: inline;">
                         <button type="submit" class="btn btn-danger">
                             <i class="bi bi-trash"></i> Sí, eliminar película
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para quitar película de colección -->
+    <div class="modal fade" id="quitarColeccionModal" tabindex="-1" aria-labelledby="quitarColeccionModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-warning text-dark">
+                    <h5 class="modal-title" id="quitarColeccionModalLabel">
+                        <i class="bi bi-exclamation-triangle"></i> Confirmar Quitar de Colección
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>¿Estás seguro de que deseas quitar esta película de tu colección?</strong></p>
+                    <p class="text-warning">Esta acción eliminará la película de todas tus listas (Vistas, Pendientes, etc.), pero se mantendrá tu valoración si has valorado esta película.</p>
+                    <p class="fw-bold">Esta acción no se puede deshacer.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <form th:action="@{/coleccion/eliminar/{id}(id=${pelicula.idPelicula})}"
+                          method="post"
+                          style="display: inline;">
+                        <input type="hidden" name="origen" value="detalle">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-check-circle"></i> Sí, quitar de colección
                         </button>
                     </form>
                 </div>

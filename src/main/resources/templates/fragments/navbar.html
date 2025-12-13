@@ -26,6 +26,11 @@
                         </a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" th:href="@{/omdb/buscar}" th:classappend="${currentPage == 'omdb'} ? 'active' : ''">
+                            <i class="bi bi-cloud-arrow-down"></i> Buscar en OMDb
+                        </a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" th:href="@{/usuarios/perfil}" th:classappend="${currentPage == 'perfil'} ? 'active' : ''">
                             <i class="bi bi-person"></i> Perfil
                         </a>
