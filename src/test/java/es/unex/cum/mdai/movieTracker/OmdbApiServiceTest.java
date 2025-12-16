@@ -212,4 +212,3 @@ public class OmdbApiServiceTest {
                 "El póster debe ser 'N/A' o una URL válida");
     }
 }
-
