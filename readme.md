@@ -28,11 +28,11 @@
 
 ## Resumen
 
-> La aplicación web **MovieTracker** permite a los usuarios gestionar su colección de películas y series de manera digital a través de un sistema centralizado que ofrece funcionalidades para el registro, la clasificación, la valoración y el control de los títulos vistos o pendientes.
+> La aplicación web **MovieTracker** permite a los usuarios gestionar su colección de películas de manera digital a través de un sistema centralizado que ofrece funcionalidades para el registro, la clasificación, la valoración y el control de los títulos vistos o pendientes.
 
 ## Descripción
 
-> MovieTracker es una aplicación web pensada para simplificar la gestión de la biblioteca audiovisual personal de cada usuario. La idea es que cualquiera pueda llevar un control organizado de las películas y series que ha visto, así como de aquellas que aún tiene pendientes.
+> MovieTracker es una aplicación web pensada para simplificar la gestión de la biblioteca audiovisual personal de cada usuario. La idea es que cualquiera pueda llevar un control organizado de las películas que ha visto, así como de aquellas que aún tiene pendientes.
 
 > El funcionamiento es muy sencillo: el usuario navega por el catálogo en forma de cuadrícula o lista, de manera que podrá añadir aquellos títulos que desee a su única colección personal. Una vez vista una película de su colección, podrá añadir además una valoración o una reseña personal.
 De este modo, la aplicación ofrece al usuario una visión general de su colección audiovisual, reflejando tanto lo que ya ha disfrutado como lo que tiene planificado ver.
@@ -46,36 +46,55 @@ En resumen, MovieTracker convierte la colección audiovisual en una experiencia 
 - El sistema contará con **autenticación de usuarios** (registro/inicio de sesión) y autorización para que solo el propietario gestione su colección y valoraciones. 
 Incluye cierre de sesión y modificación de los datos del usuario. Además, las rutas de colección/valoraciones requieren sesión iniciada.
 
-- El usuario podrá **añadir nuevas películas** y series en su colección.
+
+- El usuario podrá **añadir nuevas películas** a su colección.
+
 
 - El usuario contará con una **barra de búsqueda** para localizar películas:
     - La búsqueda podrá ser por título, director o género.
 
+
 - El catálogo permitirá **filtrar** y ordenar por **género, año y valoración**.
 
-- Se mostrarán **fichas detalladas de cada película** o serie con toda la información relevante.
+
+- Se mostrarán **fichas detalladas de cada película** con toda la información relevante.
+
 
 - El usuario podrá **añadir valoraciones y comentarios** personales sobre los títulos.
+
 
 - Existirá una **sección de pendientes** en la que se mostrarán los títulos de la colección que aún no tienen valoración del usuario.
     - Sección “Vistas”: mostrará los títulos con valoración del usuario.
 
-- El usuario podrá **consultar estadísticas básicas** de su colección, tales como el promedio de calificaciones, distribuciones por género, año o director.
+
+- El usuario podrá **consultar estadísticas básicas** de su colección, tales como el número total de películas, películas vistas y películas pendientes.
+
 
 - Cada usuario dispondrá de **una única colección personal**.
 
+
 - Al **eliminar un usuario**, se eliminará toda su información asociada, es decir, su colección y las valoraciones realizadas.
+
 
 - Al **eliminar una película** o serie del catálogo, se eliminará de todas las colecciones y se borrarán todas las valoraciones asociadas a ese título.
 
 
 ## Funcionalidades opcionales, recomendables o futuribles
 
-- El sistema se integrará con una **API externa** (p.e. OMDb/TMDb) para autocompletar los datos de películas y series.
+- [x] El sistema se integrará con una **API externa** (p.e. OMDb/TMDb) para autocompletar los datos de películas y series.
+  
+  Se ha integrado la **API de OMDb** mediante el uso de `WebClient` de Spring WebFlux. El servicio `OmdbApiServiceImpl` consume la API REST de OMDb para buscar películas por título o ID de IMDb, obteniendo información detallada (director, año, género, sinopsis, póster, etc.). El controlador `OmdbController` gestiona las peticiones del usuario administrador, quien puede buscar películas externas y, tras visualizar los detalles, importarlas directamente al catálogo local de la aplicación. Las credenciales de la API se configuran en `application.properties` mediante las propiedades `omdb.api.url` y `omdb.api.key`. Los datos se mapean a DTOs (`OmdbMovieDTO`, `OmdbSearchResponseDTO`) para facilitar la transferencia y conversión a entidades del modelo local.
 
-- Optimización de la aplicación para su uso tanto en ordenador como en dispositivos móviles, garantizando un **diseño responsive**.
 
-- Implementación de **gráficos estadísticos** para mostrar:
+- [x] **Chat de IA recomendadora** de películas basadas en los gustos del usuario.
+  
+  Se ha implementado un chatbot inteligente mediante la integración con **OpenRouter**, que actúa como gateway unificado para diversos modelos de IA (GPT, Claude, etc.). El servicio `ChatbotServiceImpl` construye un contexto personalizado para cada usuario que incluye: el catálogo completo de películas disponibles con sus metadatos (título, año, director, género, valoración media), las películas en la colección personal del usuario, y sus valoraciones previas con comentarios. Este contexto se envía junto con la pregunta del usuario a la API de OpenRouter mediante `WebClient`, utilizando el patrón de mensajes del sistema (system prompt) para instruir al modelo de IA a recomendar solo películas del catálogo disponible. El controlador `ChatbotController` gestiona las peticiones AJAX desde la interfaz web, permitiendo una interacción en tiempo real. La configuración se realiza mediante las propiedades `openrouter.api.key`, `openrouter.api.url` y `openrouter.model` en `application.properties`.
+
+
+- [x] Optimización de la aplicación para su uso tanto en ordenador como en dispositivos móviles, garantizando un **diseño responsive**.
+
+
+- [ ] Implementación de **gráficos estadísticos** para mostrar:
 
     - Distribución de géneros en la colección.
 
@@ -83,11 +102,11 @@ Incluye cierre de sesión y modificación de los datos del usuario. Además, las
 
     - Tiempo estimado de visualización total.
 
-- Sistema de **recomendaciones** de películas basadas en los gustos del usuario.
 
-- **Funcionalidades sociales** para compartir valoraciones en redes.
+- [ ] **Funcionalidades sociales** para compartir valoraciones en redes.
 
-- Opción de seleccionar el **idioma** de la interfaz (ejemplo: español/inglés).
+
+- [ ] Opción de seleccionar el **idioma** de la interfaz (ejemplo: español/inglés).
 
 
 ## Diagrama E-R
@@ -105,7 +124,13 @@ automáticamente** a partir del @ManyToMany. Para coherencia, se asume **una ún
 
 - Al **eliminar un usuario**, se eliminan su colección y **todas sus valoraciones**. Al eliminarse la colección, desaparecen los enlaces con sus películas, pero no las películas en sí.
 
-- Al **eliminar una película** del catálogo, se quita de **todas las colecciones** y se borran sus **valoraciones**. 
+- Al **eliminar una película** del catálogo, se quita de **todas las colecciones** y se borran sus **valoraciones**.
+
+> Se ha creado un enumerado Rol con los roles de usuario posibles (ADMIN, USER) con el fin de gestionar los permisos de los usuarios en la aplicación y dotar al administrador de funcionalidades exclusivas:
+> - **Gestión de películas (alta, edición, eliminación)**. El administrador puede añadir nuevas películas al catálogo, editar los detalles de las existentes o eliminarlas por completo.
+> La aplicación dispone de un catálogo local con un total de 20 películas cargadas en la base de datos mediante el script data.sql en **src/main/resources/** al inicio de la ejecución de la aplicación.
+> Asimismo, puede importar las películas desde la API externa de OMDb.
+> - **Gestión de usuarios**. El administrador puede ver la lista de usuarios registrados en el sistema, así como buscar usuarios por nombre o username.
 
 
 ## Relación Tests - Casos de uso / funcionalidades
@@ -195,7 +220,7 @@ A continuación, nos pedirá la contraseña establecida previamente para el root
 ### Configuración de la conexión en Spring Boot
 
 En cuanto al proyecto, será necesario modificar el archivo **pom.xml**, ya que se necesita añadir la dependencia correspondiente para **MySQL**. 
-Por tanto, dentro de <dependencies>, se deben incluir las siguientes líneas:
+Por tanto, dentro de dependencies, se deben incluir las siguientes líneas:
 
 ```xml
 <dependency>
@@ -258,13 +283,20 @@ Además, se debe hacer uso, en cada una de las clases que implementan los tests,
 @Sql(scripts = "/data.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
 ```
 
-### Cómo ejecutar la aplicación
+## Cómo ejecutar la aplicación
 
+### Ejecución de los Tests
 En consecuencia, el orden operativo recomendado es: primero, poner en marcha el contenedor MySQL de Docker con el puerto deseado; después, arrancar el proyecto 
 con Maven para que Hibernate genere el esquema; por último, en el contexto de pruebas, permitir que el application.properties de src/test/resources cree el esquema 
 efímero y ejecute data.sql (materializa una semilla de datos coherente para los casos de prueba) automáticamente. La verificación del sistema completo se realiza 
 consultando las tablas desde el cliente MySQL (SHOW TABLES;) y observando que las entidades de dominio y la tabla intermedia autogenerada del many-to-many entre 
 Colección y Película están presentes.
+
+### Ejecución de la aplicación web
+Para ejecutar la aplicación web, se debe iniciar el contenedor de MySQL en Docker (si no está ya en ejecución) y luego arrancar la aplicación Spring Boot desde el IDE o mediante Maven
+(con el comando `.\mvn spring-boot:run`). La aplicación estará disponible en `http://localhost:8080` (o el puerto configurado) y se podrá acceder a las funcionalidades descritas en el resumen y la descripción.
+Cabe destacar que en el contexto general de la aplicación, el esquema de la base de datos se crea o actualiza automáticamente al iniciar la aplicación, gracias a la configuración de Hibernate en el archivo `application.properties` ubicado en `src/main/resources/`, 
+permitiendo así la persistencia de datos entre sesiones de la aplicación (aquellas películas que se han importado desde la API de OMDb también se mantienen en la base de datos).
 
 ## Enlace al repositorio de Github
 
