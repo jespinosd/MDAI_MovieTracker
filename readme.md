@@ -83,12 +83,25 @@ Incluye cierre de sesión y modificación de los datos del usuario. Además, las
 
 - [x] El sistema se integrará con una **API externa** (p.e. OMDb/TMDb) para autocompletar los datos de películas y series.
   
-  Se ha integrado la **API de OMDb** mediante el uso de `WebClient` de Spring WebFlux. El servicio `OmdbApiServiceImpl` consume la API REST de OMDb para buscar películas por título o ID de IMDb, obteniendo información detallada (director, año, género, sinopsis, póster, etc.). El controlador `OmdbController` gestiona las peticiones del usuario administrador, quien puede buscar películas externas y, tras visualizar los detalles, importarlas directamente al catálogo local de la aplicación. Las credenciales de la API se configuran en `application.properties` mediante las propiedades `omdb.api.url` y `omdb.api.key`. Los datos se mapean a DTOs (`OmdbMovieDTO`, `OmdbSearchResponseDTO`) para facilitar la transferencia y conversión a entidades del modelo local.
+  Se ha integrado la **API de OMDb** mediante el uso de `WebClient` de Spring WebFlux. El servicio `OmdbApiServiceImpl` consume la API 
+REST de OMDb para buscar películas por título o ID de IMDb, obteniendo información detallada (director, año, género, sinopsis, póster, etc.). 
+El controlador `OmdbController` gestiona las peticiones del usuario administrador, quien puede buscar películas externas y, tras visualizar 
+los detalles, importarlas directamente al catálogo local de la aplicación. Las credenciales de la API se configuran en `application-local.properties`
+(un archivo que evitamos subir al repositorio por motivos de seguridad, incluyéndolo en `.gitignore`), mediante las propiedades `omdb.api.url` y `omdb.api.key`. 
+Los datos se mapean a DTOs (`OmdbMovieDTO`, `OmdbSearchResponseDTO`) para facilitar la transferencia y conversión a entidades del modelo local.
 
 
 - [x] **Chat de IA recomendadora** de películas basadas en los gustos del usuario.
   
-  Se ha implementado un chatbot inteligente mediante la integración con **OpenRouter**, que actúa como gateway unificado para diversos modelos de IA (GPT, Claude, etc.). El servicio `ChatbotServiceImpl` construye un contexto personalizado para cada usuario que incluye: el catálogo completo de películas disponibles con sus metadatos (título, año, director, género, valoración media), las películas en la colección personal del usuario, y sus valoraciones previas con comentarios. Este contexto se envía junto con la pregunta del usuario a la API de OpenRouter mediante `WebClient`, utilizando el patrón de mensajes del sistema (system prompt) para instruir al modelo de IA a recomendar solo películas del catálogo disponible. El controlador `ChatbotController` gestiona las peticiones AJAX desde la interfaz web, permitiendo una interacción en tiempo real. La configuración se realiza mediante las propiedades `openrouter.api.key`, `openrouter.api.url` y `openrouter.model` en `application.properties`.
+  Se ha implementado un chatbot inteligente mediante la integración con **OpenRouter**, que actúa como gateway unificado para diversos 
+modelos de IA (GPT, Claude, etc.). El servicio `ChatbotServiceImpl` construye un contexto personalizado para cada usuario que incluye: 
+el catálogo completo de películas disponibles con sus metadatos (título, año, director, género, valoración media), las películas en la 
+colección personal del usuario, y sus valoraciones previas con comentarios. Este contexto se envía junto con la pregunta del usuario a 
+la API de OpenRouter mediante `WebClient`, utilizando el patrón de mensajes del sistema (system prompt) para instruir al modelo de IA a 
+recomendar solo películas del catálogo disponible. El controlador `ChatbotController` gestiona las peticiones AJAX desde la interfaz web, 
+permitiendo una interacción en tiempo real. La configuración se realiza mediante las propiedades `openrouter.api.key`, `openrouter.api.url` 
+y `openrouter.model` en `application-local.properties` (un archivo que evitamos subir al repositorio por motivos de seguridad, incluyéndolo 
+en `.gitignore`), que sobrescribe las propiedades del application.properties principal.
 
 
 - [x] Optimización de la aplicación para su uso tanto en ordenador como en dispositivos móviles, garantizando un **diseño responsive**.
@@ -127,7 +140,7 @@ automáticamente** a partir del @ManyToMany. Para coherencia, se asume **una ún
 - Al **eliminar una película** del catálogo, se quita de **todas las colecciones** y se borran sus **valoraciones**.
 
 > Se ha creado un enumerado Rol con los roles de usuario posibles (ADMIN, USER) con el fin de gestionar los permisos de los usuarios en la aplicación y dotar al administrador de funcionalidades exclusivas:
-> - **Gestión de películas (alta, edición, eliminación)**. El administrador puede añadir nuevas películas al catálogo, editar los detalles de las existentes o eliminarlas por completo.
+> - **Gestión de películas (alta, edición, eliminación e importación)**. El administrador puede añadir nuevas películas al catálogo, editar los detalles de las existentes o eliminarlas por completo.
 > La aplicación dispone de un catálogo local con un total de 20 películas cargadas en la base de datos mediante el script data.sql en **src/main/resources/** al inicio de la ejecución de la aplicación.
 > Asimismo, puede importar las películas desde la API externa de OMDb.
 > - **Gestión de usuarios**. El administrador puede ver la lista de usuarios registrados en el sistema, así como buscar usuarios por nombre o username.
